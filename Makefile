@@ -1,6 +1,6 @@
 CC= gcc
-LIBS = 
-OBJ = pkr.o walk.o
+LIBS = -lz
+OBJ = pkr.o walk.o extract.o
 CFLAGS = -std=c11 -g
 all: pkr 
 

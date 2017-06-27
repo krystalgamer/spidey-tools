@@ -1,7 +1,8 @@
 //Related to walking the PKR3 Files directories
-//
-
 #include "pkr.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <errno.h>
 
 extern FILE *fp;
 
@@ -67,14 +68,16 @@ void ListDirFiles(PKRFile *files, uint32_t numFiles){
 		printf("\t%s\n", &files[i]);
 }
 
-bool SetupPkrDirs(PKR3File *pkr, PKRDir **pkrDirs){
+bool SetupPkrDirs(PKRDir **pkrDirs){
 
+	
+	static PKR3File pkr = {0, 0};
 	//Checks if file is valid
-	if(!GetFileHeader(pkr))
+	if(!GetFileHeader(&pkr))
 		return false;
 
 	//Loads num dirs and total num files
-	if(!GetPkrDirsHeader(pkr))
+	if(!GetPkrDirsHeader(&pkr))
 		return false;
 
 	*pkrDirs = malloc(sizeof(PKRDir) * pkrDirHeader.numDirs);
@@ -94,11 +97,17 @@ bool SetupPkrDirs(PKR3File *pkr, PKRDir **pkrDirs){
 void ExtractDirs(PKRDir *pkrDirs){
 	
 	PKRFile file;
-	for(uint32_t curDir = 0; curDir<pkrDirHeader.numDirs; curDir++){
-		printf("Extracting %s\n", pkrDirs[curDir]);
 
-		for(uint32_t curFile = 0; curFile<pkrDirs[curDir].numFiles; curFile++){
-			
-		}
+	//Only throw error if it cant create the dir
+	if(mkdir("extracted") && errno != EEXIST){
+		puts("An error occurred creating extracted dir.");
+		return;
+	}
+
+	for(uint32_t curDir = 0; curDir<pkrDirHeader.numDirs; curDir++){
+
+		printf("Extracting %s\n", &pkrDirs[curDir]);
+		
+
 	}
 }

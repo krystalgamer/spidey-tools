@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define FILE_COMPRESSED 0xFFFFFFFE
+#define FILE_UNCOMPRESSED 0x00000002
+
 
 typedef struct{
 	uint32_t magic;
@@ -25,13 +28,20 @@ typedef struct{
 typedef struct{
 	union{
 		uint8_t total[0x34];
-		//TODO implement rest of struct
 		struct{
-			char name[20];
-			
+			char name[0x20];
+			uint32_t crc;
+			uint32_t compressed;
+			uint32_t fileOffset;
+			uint32_t uncompressedSize;
+			uint32_t compressedSize;
 		};
 	};
 }PKRFile;
 
 //walk.c
-bool SetupPkrDirs(PKR3File *pkr, PKRDir **pkrDirs);
+bool SetupPkrDirs(PKRDir **pkrDirs);
+void ExtractDirs(PKRDir *pkrDirs);
+
+//extracted.c
+bool ExtractDir(PKRDir *curDir);
