@@ -20,8 +20,7 @@ int main(int argc, char *argv[]){
 	if(!SetupPkrDirs(&pkrDirs))
 		goto error;
 	
-	//ExtractDirs(pkrDirs);	
-	ExtractDir(pkrDirs);
+	ExtractDirs(pkrDirs);	
 
 	error:
 	fclose(fp);

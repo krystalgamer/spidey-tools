@@ -7,15 +7,24 @@
 
 #define EXTRACT_BUF_SIZE 0xFFFF 
 
+//Extract subroutines
 bool ExtractUncompressed(PKRFile *file);
 bool ExtractCompressed(PKRFile *file);
 
+bool GetFile(PKRFile *file);
+bool WriteFileToDisk(PKRFile *file);
+
 extern FILE *fp;
 static FILE *out = NULL;
+
 static uint8_t buffer[0xFF];
 static uint8_t extractBuffer[EXTRACT_BUF_SIZE];
 
-uint32_t GetFile(PKRFile *file){
+static uint8_t *auxExtractBuf = NULL; //Used when extract buffer is not enough
+uint8_t *curExtBuf = NULL;//Indicates which buffer is being used for extraction
+		
+//Gets PKRFile struct
+uint32_t GetPkrFile(PKRFile *file){
 	return fread(file, sizeof(PKRFile), 1, fp);
 }
 
@@ -51,11 +60,11 @@ bool ExtractDir(PKRDir *curDir){
 	PKRFile extracted;
 	for(uint32_t curFile = 0; curFile<curDir->numFiles; curFile++){
 
-		if(!GetFile(&extracted)){
+		if(!GetPkrFile(&extracted)){
 			printf("Error reading file..");
 			return false;
 		}
-
+		
 		switch(extracted.compressed){
 			case FILE_COMPRESSED:
 				if(!ExtractCompressed(&extracted))
@@ -66,7 +75,7 @@ bool ExtractDir(PKRDir *curDir){
 					return false;
 				break;
 			default:
-				puts("Unknown compression type.. Quitting");
+				printf("Unknown compression type:%08X.. Quitting", extracted.compressed);
 				return false;
 		}
 			
@@ -79,14 +88,23 @@ bool ExtractDir(PKRDir *curDir){
 }
 
 bool ExtractUncompressed(PKRFile *file){
-	
-	static uint8_t *auxExtractBuf = NULL;
-	uint8_t curExtBuf = NULL;//Indicates which buffer is being used for extraction
 		
+	if(!GetFile(file))
+		return false;
 
+	return WriteFileToDisk(file);
+}
+
+bool ExtractCompressed(PKRFile *file){
+	return true;
+}
+
+//Get file off pkr
+bool GetFile(PKRFile *file){
+	
 	//Save original offset so it can keep reading the files
 	uint32_t originalFp = ftell(fp);
-	if(originalFp == 0xFFFFFFFF)	{
+	if(originalFp == 0xFFFFFFFF){
 		puts("Error getting file position");
 		return false;
 	}
@@ -95,19 +113,15 @@ bool ExtractUncompressed(PKRFile *file){
 		printf("Could not access file %s offset: %08X", file->name, file->fileOffset); 
 		return false;
 	}
+	
+	//Get the file size regardless of compression status
+	uint32_t fileSize = (file->compressed == FILE_UNCOMPRESSED) ? 
+			file->uncompressedSize : file->compressedSize;
 
-	//Extract part
-	buffer[strlen(buffer) + strlen(file->name)] = '\0'
-	strncat(buffer, file->name, 0x20);
-	out = fopen(buffer, "wb");
+	if(fileSize > EXTRACT_BUF_SIZE){
 
-	if(!out){
-		printf("Could not create the extracted file %s\n", file->name);
-		return false;
-	}
+		auxExtractBuf = malloc(fileSize);
 
-	if(file->uncompressedSize > EXTRACT_BUF_SIZE){
-		auxExtractBuf = malloc(file->uncompressedSize);
 		if(!auxExtractBuf){
 			printf("Couldn't create extract buffer for %s\n", file->name);
 			return false;
@@ -116,20 +130,55 @@ bool ExtractUncompressed(PKRFile *file){
 	}
 	else
 		curExtBuf = extractBuffer;
-	
-	//Should i make this a function??
-		
+
+	if(!(fread(curExtBuf, fileSize, 1, fp))){
+		printf("Could not read file %s\n", file->name);
+		return false;
+	}
+
 	//Rewind
 	if(fseek(fp, originalFp, SEEK_SET)){
 		puts("Could not rewind to original offset..");
+		
+		if(auxExtractBuf){
+			free(auxExtractBuf);
+			curExtBuf = auxExtractBuf = NULL;
+		}
+			
 		return false;
+	}
+
+	return true;}
+
+bool WriteFileToDisk(PKRFile *file){
+	
+	buffer[strlen(buffer) + strlen(file->name)] = '\0';
+	strncat(buffer, file->name, 0x20);
+	out = fopen(buffer, "wb");
+
+	if(!out){
+		printf("Could not create the extracted file %s\n", file->name);
+		return false;
+	}
+	
+	if(!(fwrite(curExtBuf, file->uncompressedSize, 1, out))){
+		puts("Could not write file to disk");
+
+		if(auxExtractBuf){
+			free(auxExtractBuf);
+			curExtBuf = auxExtractBuf = NULL;
+		}
+
+		return false;
+	}
+
+	fclose(out);
+	
+	//Clear the auxiliary buffer
+	if(auxExtractBuf){
+		free(auxExtractBuf);
+		curExtBuf = auxExtractBuf = NULL;
 	}
 
 	return true;
 }
-
-bool ExtractCompressed(PKRFile *file){
-	return true;
-}
-
-

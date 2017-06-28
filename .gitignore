@@ -54,3 +54,6 @@ dkms.conf
 #vim files
 *.swp
 *.swo
+
+#spidey files
+extracted/

@@ -4,9 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define FILE_COMPRESSED 0xFFFFFFFE
-#define FILE_UNCOMPRESSED 0x00000002
-
+#define FILE_COMPRESSED 0x00000002
+#define FILE_UNCOMPRESSED 0xFFFFFFFE
 
 typedef struct{
 	uint32_t magic;

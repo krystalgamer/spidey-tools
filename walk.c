@@ -107,7 +107,10 @@ void ExtractDirs(PKRDir *pkrDirs){
 	for(uint32_t curDir = 0; curDir<pkrDirHeader.numDirs; curDir++){
 
 		printf("Extracting %s\n", &pkrDirs[curDir]);
-		
 
+		if(!ExtractDir(&pkrDirs[curDir])){
+			puts("An error occurred");
+			return;
+		}
 	}
 }
