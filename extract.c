@@ -14,6 +14,9 @@ bool ExtractCompressed(PKRFile *file);
 bool GetFile(PKRFile *file);
 bool WriteFileToDisk(PKRFile *file);
 
+//Checksum
+bool calculateExtractedCrc(PKRFile *file);
+
 extern FILE *fp;
 static FILE *out = NULL;
 
@@ -88,7 +91,6 @@ bool ExtractDir(PKRDir *curDir){
 }
 
 bool ExtractUncompressed(PKRFile *file){
-		
 	if(!GetFile(file))
 		return false;
 
@@ -148,7 +150,13 @@ bool GetFile(PKRFile *file){
 		return false;
 	}
 
-	return true;}
+	if(!calculateExtractedCrc(file)){
+		printf("CRC doesnt match: %s", file->name);
+		return false;
+	}
+
+	return true;
+}
 
 bool WriteFileToDisk(PKRFile *file){
 	
@@ -181,4 +189,12 @@ bool WriteFileToDisk(PKRFile *file){
 	}
 
 	return true;
+}
+
+bool calculateExtractedCrc(PKRFile *file){
+	uint32_t crc = 0; 
+
+	crc = crc32(crc, curExtBuf, file->uncompressedSize);
+	
+	return (crc == file->crc);
 }
