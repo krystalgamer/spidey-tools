@@ -90,7 +90,6 @@ bool ExtractDir(PKRDir *curDir){
 		buffer[pathLen] = '\0';
 	}
 
-
 	return true;
 }
 
@@ -191,7 +190,7 @@ bool WriteFileToDisk(PKRFile *file){
 	}
 	
 	//CRC Check
-	if(!CalculateExtractedCrc(file))	{
+	if(!CalculateExtractedCrc(file)){
 		printf("Invalid CRC for %s\n", file->name);
 		fclose(out);
 		if(auxExtractBuf){

@@ -17,12 +17,9 @@ int main(int argc, char *argv[]){
 	}
 
 	PKRDir *pkrDirs = NULL;
-	if(!SetupPkrDirs(&pkrDirs))
-		goto error;
+	if(SetupPkrDirs(&pkrDirs))
+		ExtractDirs(pkrDirs);
 	
-	ExtractDirs(pkrDirs);	
-
-	error:
 	fclose(fp);
 	return 0;
 }
