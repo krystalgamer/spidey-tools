@@ -30,10 +30,6 @@ static uint8_t extractBuffer[EXTRACT_BUF_SIZE];
 static uint8_t *auxExtractBuf = NULL; //Used when extract buffer is not enough
 uint8_t *curExtBuf = NULL;//Indicates which buffer is being used for extraction
 
-//zlib stuff
-bool zlibSetup;
-z_stream stream;
-
 //Gets PKRFile struct
 uint32_t GetPkrFile(PKRFile *file){
 	return fread(file, sizeof(PKRFile), 1, fp);
