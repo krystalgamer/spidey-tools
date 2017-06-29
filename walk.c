@@ -4,7 +4,13 @@
 #include <sys/types.h>
 #include <errno.h>
 
+#include <zlib.h>
+
 extern FILE *fp;
+
+//zlib stuff
+extern bool zlibSetup = false;
+extern z_stream stream;
 
 const char *magic = "PKR3";
 static PKRDirHeader pkrDirHeader;
@@ -97,6 +103,8 @@ bool SetupPkrDirs(PKRDir **pkrDirs){
 void ExtractDirs(PKRDir *pkrDirs){
 	
 	PKRFile file;
+
+	zlibSetup = false; 
 
 	//Only throw error if it cant create the dir
 	if(mkdir("extracted") && errno != EEXIST){

@@ -11,11 +11,15 @@
 bool ExtractUncompressed(PKRFile *file);
 bool ExtractCompressed(PKRFile *file);
 
+uint8_t *DecompressFile(PKRFile *file);
+
 bool GetFile(PKRFile *file);
 bool WriteFileToDisk(PKRFile *file);
 
+bool CheckAlreadyExtracted(PKRFile *file);
+
 //Checksum
-bool calculateExtractedCrc(PKRFile *file);
+bool CalculateExtractedCrc(PKRFile *file);
 
 extern FILE *fp;
 static FILE *out = NULL;
@@ -25,7 +29,11 @@ static uint8_t extractBuffer[EXTRACT_BUF_SIZE];
 
 static uint8_t *auxExtractBuf = NULL; //Used when extract buffer is not enough
 uint8_t *curExtBuf = NULL;//Indicates which buffer is being used for extraction
-		
+
+//zlib stuff
+bool zlibSetup;
+z_stream stream;
+
 //Gets PKRFile struct
 uint32_t GetPkrFile(PKRFile *file){
 	return fread(file, sizeof(PKRFile), 1, fp);
@@ -91,14 +99,39 @@ bool ExtractDir(PKRDir *curDir){
 }
 
 bool ExtractUncompressed(PKRFile *file){
+
+	if(CheckAlreadyExtracted(file))
+		return true;
+
 	if(!GetFile(file))
 		return false;
-
+	
 	return WriteFileToDisk(file);
 }
 
 bool ExtractCompressed(PKRFile *file){
-	return true;
+	
+	if(CheckAlreadyExtracted(file))
+		return true;
+
+	if(!GetFile(file))
+		return false;
+
+	curExtBuf = DecompressFile(file);
+	
+	//Auxiliary buffer is no longer needed
+	if(auxExtractBuf){
+		free(auxExtractBuf);
+		auxExtractBuf = NULL;
+
+		if(!curExtBuf)
+			return false;
+	}
+	
+	//WriteFileToDisk will free it
+	auxExtractBuf = curExtBuf;
+
+	return WriteFileToDisk(file);
 }
 
 //Get file off pkr
@@ -150,25 +183,29 @@ bool GetFile(PKRFile *file){
 		return false;
 	}
 
-	if(!calculateExtractedCrc(file)){
-		printf("CRC doesnt match: %s", file->name);
-		return false;
-	}
-
 	return true;
 }
 
 bool WriteFileToDisk(PKRFile *file){
-	
-	buffer[strlen(buffer) + strlen(file->name)] = '\0';
-	strncat(buffer, file->name, 0x20);
-	out = fopen(buffer, "wb");
 
+	out = fopen(buffer, "wb");
 	if(!out){
-		printf("Could not create the extracted file %s\n", file->name);
+		printf("Could not create the extracted file <%s>\n%s\n", buffer, strerror(errno));
 		return false;
 	}
 	
+	//CRC Check
+	if(!CalculateExtractedCrc(file))	{
+		printf("Invalid CRC for %s\n", file->name);
+		fclose(out);
+		if(auxExtractBuf){
+			free(auxExtractBuf);
+			curExtBuf = auxExtractBuf = NULL;
+		}
+		return false;
+
+	}
+
 	if(!(fwrite(curExtBuf, file->uncompressedSize, 1, out))){
 		puts("Could not write file to disk");
 
@@ -191,10 +228,43 @@ bool WriteFileToDisk(PKRFile *file){
 	return true;
 }
 
-bool calculateExtractedCrc(PKRFile *file){
+bool CalculateExtractedCrc(PKRFile *file){
 	uint32_t crc = 0; 
 
 	crc = crc32(crc, curExtBuf, file->uncompressedSize);
 	
 	return (crc == file->crc);
+}
+
+bool CheckAlreadyExtracted(PKRFile *file){
+	
+	//Create the file namw
+	buffer[strlen(buffer) + strlen(file->name)] = '\0';
+	strncat(buffer, file->name, 0x20);
+	out = fopen(buffer, "rb");
+	
+	if(out)	{
+		fclose(out);
+		out = NULL;
+		return true;
+	}
+
+	return false;
+}
+
+uint8_t *DecompressFile(PKRFile *file){
+	uint8_t *outBuffer = NULL;
+	outBuffer = malloc(file->uncompressedSize);
+
+	if(!outBuffer){
+		puts("Could not allocate space for output buffer");
+		return false;
+	}
+
+	uint32_t finalSize = file->uncompressedSize;
+	if(uncompress(outBuffer, (uLongf*)&finalSize, curExtBuf, file->compressedSize) != Z_OK){
+		puts("Error uncompressing the file :(");
+		return false;
+	}
+	return outBuffer;
 }
