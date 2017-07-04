@@ -1,91 +1,92 @@
 #include <windows.h>
+#include <stdio.h>
 
 #pragma warning(disable:4996)
 
 BOOL NopMemory(DWORD address, DWORD size);
 BOOL SetMemory(DWORD address, UCHAR *buffer, DWORD bufSize);
 
-#pragma comment (linker, "/export:_BinkBufferBlit@12=bink32_._BinkBufferBlit@12,@1")
-#pragma comment (linker, "/export:_BinkBufferCheckWinPos@12=bink32_._BinkBufferCheckWinPos@12,@2")
-#pragma comment (linker, "/export:_BinkBufferClear@8=bink32_._BinkBufferClear@8,@3")
-#pragma comment (linker, "/export:_BinkBufferClose@4=bink32_._BinkBufferClose@4,@4")
-#pragma comment (linker, "/export:_BinkBufferGetDescription@4=bink32_._BinkBufferGetDescription@4,@5")
-#pragma comment (linker, "/export:_BinkBufferGetError@0=bink32_._BinkBufferGetError@0,@6")
-#pragma comment (linker, "/export:_BinkBufferLock@4=bink32_._BinkBufferLock@4,@7")
-#pragma comment (linker, "/export:_BinkBufferOpen@16=bink32_._BinkBufferOpen@16,@8")
-#pragma comment (linker, "/export:_BinkBufferSetDirectDraw@8=bink32_._BinkBufferSetDirectDraw@8,@9")
-#pragma comment (linker, "/export:_BinkBufferSetHWND@8=bink32_._BinkBufferSetHWND@8,@10")
-#pragma comment (linker, "/export:_BinkBufferSetOffset@12=bink32_._BinkBufferSetOffset@12,@11")
-#pragma comment (linker, "/export:_BinkBufferSetResolution@12=bink32_._BinkBufferSetResolution@12,@12")
-#pragma comment (linker, "/export:_BinkBufferSetScale@12=bink32_._BinkBufferSetScale@12,@13")
-#pragma comment (linker, "/export:_BinkBufferUnlock@4=bink32_._BinkBufferUnlock@4,@14")
-#pragma comment (linker, "/export:_BinkCheckCursor@20=bink32_._BinkCheckCursor@20,@15")
-#pragma comment (linker, "/export:_BinkClose@4=bink32_._BinkClose@4,@16")
-#pragma comment (linker, "/export:_BinkCloseTrack@4=bink32_._BinkCloseTrack@4,@17")
-#pragma comment (linker, "/export:_BinkCopyToBuffer@28=bink32_._BinkCopyToBuffer@28,@18")
-#pragma comment (linker, "/export:_BinkDDSurfaceType@4=bink32_._BinkDDSurfaceType@4,@19")
-#pragma comment (linker, "/export:_BinkDX8SurfaceType@4=bink32_._BinkDX8SurfaceType@4,@20")
-#pragma comment (linker, "/export:_BinkDoFrame@4=bink32_._BinkDoFrame@4,@21")
-#pragma comment (linker, "/export:_BinkGetError@0=bink32_._BinkGetError@0,@22")
-#pragma comment (linker, "/export:_BinkGetKeyFrame@12=bink32_._BinkGetKeyFrame@12,@23")
-#pragma comment (linker, "/export:_BinkGetRealtime@12=bink32_._BinkGetRealtime@12,@24")
-#pragma comment (linker, "/export:_BinkGetRects@8=bink32_._BinkGetRects@8,@25")
-#pragma comment (linker, "/export:_BinkGetSummary@8=bink32_._BinkGetSummary@8,@26")
-#pragma comment (linker, "/export:_BinkGetTrackData@8=bink32_._BinkGetTrackData@8,@27")
-#pragma comment (linker, "/export:_BinkGetTrackID@8=bink32_._BinkGetTrackID@8,@28")
-#pragma comment (linker, "/export:_BinkGetTrackMaxSize@8=bink32_._BinkGetTrackMaxSize@8,@29")
-#pragma comment (linker, "/export:_BinkGetTrackType@8=bink32_._BinkGetTrackType@8,@30")
-#pragma comment (linker, "/export:_BinkGoto@12=bink32_._BinkGoto@12,@31")
-#pragma comment (linker, "/export:_BinkIsSoftwareCursor@8=bink32_._BinkIsSoftwareCursor@8,@32")
-#pragma comment (linker, "/export:_BinkLogoAddress@0=bink32_._BinkLogoAddress@0,@33")
-#pragma comment (linker, "/export:_BinkNextFrame@4=bink32_._BinkNextFrame@4,@34")
-#pragma comment (linker, "/export:_BinkOpen@8=bink32_._BinkOpen@8,@35")
-#pragma comment (linker, "/export:_BinkOpenDirectSound@4=bink32_._BinkOpenDirectSound@4,@36")
-#pragma comment (linker, "/export:_BinkOpenMiles@4=bink32_._BinkOpenMiles@4,@37")
-#pragma comment (linker, "/export:_BinkOpenTrack@8=bink32_._BinkOpenTrack@8,@38")
-#pragma comment (linker, "/export:_BinkOpenWaveOut@4=bink32_._BinkOpenWaveOut@4,@39")
-#pragma comment (linker, "/export:_BinkPause@8=bink32_._BinkPause@8,@40")
-#pragma comment (linker, "/export:_BinkRestoreCursor@4=bink32_._BinkRestoreCursor@4,@41")
-#pragma comment (linker, "/export:_BinkService@4=bink32_._BinkService@4,@42")
-#pragma comment (linker, "/export:_BinkSetError@4=bink32_._BinkSetError@4,@43")
-#pragma comment (linker, "/export:_BinkSetFrameRate@8=bink32_._BinkSetFrameRate@8,@44")
-#pragma comment (linker, "/export:_BinkSetIO@4=bink32_._BinkSetIO@4,@45")
-#pragma comment (linker, "/export:_BinkSetIOSize@4=bink32_._BinkSetIOSize@4,@46")
-#pragma comment (linker, "/export:_BinkSetPan@8=bink32_._BinkSetPan@8,@47")
-#pragma comment (linker, "/export:_BinkSetSimulate@4=bink32_._BinkSetSimulate@4,@48")
-#pragma comment (linker, "/export:_BinkSetSoundOnOff@8=bink32_._BinkSetSoundOnOff@8,@49")
-#pragma comment (linker, "/export:_BinkSetSoundSystem@8=bink32_._BinkSetSoundSystem@8,@50")
-#pragma comment (linker, "/export:_BinkSetSoundTrack@4=bink32_._BinkSetSoundTrack@4,@51")
-#pragma comment (linker, "/export:_BinkSetVideoOnOff@8=bink32_._BinkSetVideoOnOff@8,@52")
-#pragma comment (linker, "/export:_BinkSetVolume@8=bink32_._BinkSetVolume@8,@53")
-#pragma comment (linker, "/export:_BinkWait@4=bink32_._BinkWait@4,@54")
-#pragma comment (linker, "/export:_RADTimerRead@0=bink32_._RADTimerRead@0,@55")
-#pragma comment (linker, "/export:_YUV_blit_16a1bpp@52=bink32_._YUV_blit_16a1bpp@52,@56")
-#pragma comment (linker, "/export:_YUV_blit_16a1bpp_mask@52=bink32_._YUV_blit_16a1bpp_mask@52,@57")
-#pragma comment (linker, "/export:_YUV_blit_16a4bpp@52=bink32_._YUV_blit_16a4bpp@52,@58")
-#pragma comment (linker, "/export:_YUV_blit_16a4bpp_mask@52=bink32_._YUV_blit_16a4bpp_mask@52,@59")
-#pragma comment (linker, "/export:_YUV_blit_16bpp@48=bink32_._YUV_blit_16bpp@48,@60")
-#pragma comment (linker, "/export:_YUV_blit_16bpp_mask@48=bink32_._YUV_blit_16bpp_mask@48,@61")
-#pragma comment (linker, "/export:_YUV_blit_24bpp@48=bink32_._YUV_blit_24bpp@48,@62")
-#pragma comment (linker, "/export:_YUV_blit_24bpp_mask@48=bink32_._YUV_blit_24bpp_mask@48,@63")
-#pragma comment (linker, "/export:_YUV_blit_24rbpp@48=bink32_._YUV_blit_24rbpp@48,@64")
-#pragma comment (linker, "/export:_YUV_blit_24rbpp_mask@48=bink32_._YUV_blit_24rbpp_mask@48,@65")
-#pragma comment (linker, "/export:_YUV_blit_32abpp@52=bink32_._YUV_blit_32abpp@52,@66")
-#pragma comment (linker, "/export:_YUV_blit_32abpp_mask@52=bink32_._YUV_blit_32abpp_mask@52,@67")
-#pragma comment (linker, "/export:_YUV_blit_32bpp@48=bink32_._YUV_blit_32bpp@48,@68")
-#pragma comment (linker, "/export:_YUV_blit_32bpp_mask@48=bink32_._YUV_blit_32bpp_mask@48,@69")
-#pragma comment (linker, "/export:_YUV_blit_32rabpp@52=bink32_._YUV_blit_32rabpp@52,@70")
-#pragma comment (linker, "/export:_YUV_blit_32rabpp_mask@52=bink32_._YUV_blit_32rabpp_mask@52,@71")
-#pragma comment (linker, "/export:_YUV_blit_32rbpp@48=bink32_._YUV_blit_32rbpp@48,@72")
-#pragma comment (linker, "/export:_YUV_blit_32rbpp_mask@48=bink32_._YUV_blit_32rbpp_mask@48,@73")
-#pragma comment (linker, "/export:_YUV_blit_UYVY@48=bink32_._YUV_blit_UYVY@48,@74")
-#pragma comment (linker, "/export:_YUV_blit_UYVY_mask@48=bink32_._YUV_blit_UYVY_mask@48,@75")
-#pragma comment (linker, "/export:_YUV_blit_YUY2@48=bink32_._YUV_blit_YUY2@48,@76")
-#pragma comment (linker, "/export:_YUV_blit_YUY2_mask@48=bink32_._YUV_blit_YUY2_mask@48,@77")
-#pragma comment (linker, "/export:_YUV_blit_YV12@52=bink32_._YUV_blit_YV12@52,@78")
-#pragma comment (linker, "/export:_YUV_init@4=bink32_._YUV_init@4,@79")
-#pragma comment (linker, "/export:_radfree@4=bink32_._radfree@4,@80")
-#pragma comment (linker, "/export:_radmalloc@4=bink32_._radmalloc@4,@81")
+#pragma comment (linker, "/export:_BinkBufferBlit@12=binkw32_._BinkBufferBlit@12,@1")
+#pragma comment (linker, "/export:_BinkBufferCheckWinPos@12=binkw32_._BinkBufferCheckWinPos@12,@2")
+#pragma comment (linker, "/export:_BinkBufferClear@8=binkw32_._BinkBufferClear@8,@3")
+#pragma comment (linker, "/export:_BinkBufferClose@4=binkw32_._BinkBufferClose@4,@4")
+#pragma comment (linker, "/export:_BinkBufferGetDescription@4=binkw32_._BinkBufferGetDescription@4,@5")
+#pragma comment (linker, "/export:_BinkBufferGetError@0=binkw32_._BinkBufferGetError@0,@6")
+#pragma comment (linker, "/export:_BinkBufferLock@4=binkw32_._BinkBufferLock@4,@7")
+#pragma comment (linker, "/export:_BinkBufferOpen@16=binkw32_._BinkBufferOpen@16,@8")
+#pragma comment (linker, "/export:_BinkBufferSetDirectDraw@8=binkw32_._BinkBufferSetDirectDraw@8,@9")
+#pragma comment (linker, "/export:_BinkBufferSetHWND@8=binkw32_._BinkBufferSetHWND@8,@10")
+#pragma comment (linker, "/export:_BinkBufferSetOffset@12=binkw32_._BinkBufferSetOffset@12,@11")
+#pragma comment (linker, "/export:_BinkBufferSetResolution@12=binkw32_._BinkBufferSetResolution@12,@12")
+#pragma comment (linker, "/export:_BinkBufferSetScale@12=binkw32_._BinkBufferSetScale@12,@13")
+#pragma comment (linker, "/export:_BinkBufferUnlock@4=binkw32_._BinkBufferUnlock@4,@14")
+#pragma comment (linker, "/export:_BinkCheckCursor@20=binkw32_._BinkCheckCursor@20,@15")
+#pragma comment (linker, "/export:_BinkClose@4=binkw32_._BinkClose@4,@16")
+#pragma comment (linker, "/export:_BinkCloseTrack@4=binkw32_._BinkCloseTrack@4,@17")
+#pragma comment (linker, "/export:_BinkCopyToBuffer@28=binkw32_._BinkCopyToBuffer@28,@18")
+#pragma comment (linker, "/export:_BinkDDSurfaceType@4=binkw32_._BinkDDSurfaceType@4,@19")
+#pragma comment (linker, "/export:_BinkDX8SurfaceType@4=binkw32_._BinkDX8SurfaceType@4,@20")
+#pragma comment (linker, "/export:_BinkDoFrame@4=binkw32_._BinkDoFrame@4,@21")
+#pragma comment (linker, "/export:_BinkGetError@0=binkw32_._BinkGetError@0,@22")
+#pragma comment (linker, "/export:_BinkGetKeyFrame@12=binkw32_._BinkGetKeyFrame@12,@23")
+#pragma comment (linker, "/export:_BinkGetRealtime@12=binkw32_._BinkGetRealtime@12,@24")
+#pragma comment (linker, "/export:_BinkGetRects@8=binkw32_._BinkGetRects@8,@25")
+#pragma comment (linker, "/export:_BinkGetSummary@8=binkw32_._BinkGetSummary@8,@26")
+#pragma comment (linker, "/export:_BinkGetTrackData@8=binkw32_._BinkGetTrackData@8,@27")
+#pragma comment (linker, "/export:_BinkGetTrackID@8=binkw32_._BinkGetTrackID@8,@28")
+#pragma comment (linker, "/export:_BinkGetTrackMaxSize@8=binkw32_._BinkGetTrackMaxSize@8,@29")
+#pragma comment (linker, "/export:_BinkGetTrackType@8=binkw32_._BinkGetTrackType@8,@30")
+#pragma comment (linker, "/export:_BinkGoto@12=binkw32_._BinkGoto@12,@31")
+#pragma comment (linker, "/export:_BinkIsSoftwareCursor@8=binkw32_._BinkIsSoftwareCursor@8,@32")
+#pragma comment (linker, "/export:_BinkLogoAddress@0=binkw32_._BinkLogoAddress@0,@33")
+#pragma comment (linker, "/export:_BinkNextFrame@4=binkw32_._BinkNextFrame@4,@34")
+#pragma comment (linker, "/export:_BinkOpen@8=binkw32_._BinkOpen@8,@35")
+#pragma comment (linker, "/export:_BinkOpenDirectSound@4=binkw32_._BinkOpenDirectSound@4,@36")
+#pragma comment (linker, "/export:_BinkOpenMiles@4=binkw32_._BinkOpenMiles@4,@37")
+#pragma comment (linker, "/export:_BinkOpenTrack@8=binkw32_._BinkOpenTrack@8,@38")
+#pragma comment (linker, "/export:_BinkOpenWaveOut@4=binkw32_._BinkOpenWaveOut@4,@39")
+#pragma comment (linker, "/export:_BinkPause@8=binkw32_._BinkPause@8,@40")
+#pragma comment (linker, "/export:_BinkRestoreCursor@4=binkw32_._BinkRestoreCursor@4,@41")
+#pragma comment (linker, "/export:_BinkService@4=binkw32_._BinkService@4,@42")
+#pragma comment (linker, "/export:_BinkSetError@4=binkw32_._BinkSetError@4,@43")
+#pragma comment (linker, "/export:_BinkSetFrameRate@8=binkw32_._BinkSetFrameRate@8,@44")
+#pragma comment (linker, "/export:_BinkSetIO@4=binkw32_._BinkSetIO@4,@45")
+#pragma comment (linker, "/export:_BinkSetIOSize@4=binkw32_._BinkSetIOSize@4,@46")
+#pragma comment (linker, "/export:_BinkSetPan@8=binkw32_._BinkSetPan@8,@47")
+#pragma comment (linker, "/export:_BinkSetSimulate@4=binkw32_._BinkSetSimulate@4,@48")
+#pragma comment (linker, "/export:_BinkSetSoundOnOff@8=binkw32_._BinkSetSoundOnOff@8,@49")
+#pragma comment (linker, "/export:_BinkSetSoundSystem@8=binkw32_._BinkSetSoundSystem@8,@50")
+#pragma comment (linker, "/export:_BinkSetSoundTrack@4=binkw32_._BinkSetSoundTrack@4,@51")
+#pragma comment (linker, "/export:_BinkSetVideoOnOff@8=binkw32_._BinkSetVideoOnOff@8,@52")
+#pragma comment (linker, "/export:_BinkSetVolume@8=binkw32_._BinkSetVolume@8,@53")
+#pragma comment (linker, "/export:_BinkWait@4=binkw32_._BinkWait@4,@54")
+#pragma comment (linker, "/export:_RADTimerRead@0=binkw32_._RADTimerRead@0,@55")
+#pragma comment (linker, "/export:_YUV_blit_16a1bpp@52=binkw32_._YUV_blit_16a1bpp@52,@56")
+#pragma comment (linker, "/export:_YUV_blit_16a1bpp_mask@52=binkw32_._YUV_blit_16a1bpp_mask@52,@57")
+#pragma comment (linker, "/export:_YUV_blit_16a4bpp@52=binkw32_._YUV_blit_16a4bpp@52,@58")
+#pragma comment (linker, "/export:_YUV_blit_16a4bpp_mask@52=binkw32_._YUV_blit_16a4bpp_mask@52,@59")
+#pragma comment (linker, "/export:_YUV_blit_16bpp@48=binkw32_._YUV_blit_16bpp@48,@60")
+#pragma comment (linker, "/export:_YUV_blit_16bpp_mask@48=binkw32_._YUV_blit_16bpp_mask@48,@61")
+#pragma comment (linker, "/export:_YUV_blit_24bpp@48=binkw32_._YUV_blit_24bpp@48,@62")
+#pragma comment (linker, "/export:_YUV_blit_24bpp_mask@48=binkw32_._YUV_blit_24bpp_mask@48,@63")
+#pragma comment (linker, "/export:_YUV_blit_24rbpp@48=binkw32_._YUV_blit_24rbpp@48,@64")
+#pragma comment (linker, "/export:_YUV_blit_24rbpp_mask@48=binkw32_._YUV_blit_24rbpp_mask@48,@65")
+#pragma comment (linker, "/export:_YUV_blit_32abpp@52=binkw32_._YUV_blit_32abpp@52,@66")
+#pragma comment (linker, "/export:_YUV_blit_32abpp_mask@52=binkw32_._YUV_blit_32abpp_mask@52,@67")
+#pragma comment (linker, "/export:_YUV_blit_32bpp@48=binkw32_._YUV_blit_32bpp@48,@68")
+#pragma comment (linker, "/export:_YUV_blit_32bpp_mask@48=binkw32_._YUV_blit_32bpp_mask@48,@69")
+#pragma comment (linker, "/export:_YUV_blit_32rabpp@52=binkw32_._YUV_blit_32rabpp@52,@70")
+#pragma comment (linker, "/export:_YUV_blit_32rabpp_mask@52=binkw32_._YUV_blit_32rabpp_mask@52,@71")
+#pragma comment (linker, "/export:_YUV_blit_32rbpp@48=binkw32_._YUV_blit_32rbpp@48,@72")
+#pragma comment (linker, "/export:_YUV_blit_32rbpp_mask@48=binkw32_._YUV_blit_32rbpp_mask@48,@73")
+#pragma comment (linker, "/export:_YUV_blit_UYVY@48=binkw32_._YUV_blit_UYVY@48,@74")
+#pragma comment (linker, "/export:_YUV_blit_UYVY_mask@48=binkw32_._YUV_blit_UYVY_mask@48,@75")
+#pragma comment (linker, "/export:_YUV_blit_YUY2@48=binkw32_._YUV_blit_YUY2@48,@76")
+#pragma comment (linker, "/export:_YUV_blit_YUY2_mask@48=binkw32_._YUV_blit_YUY2_mask@48,@77")
+#pragma comment (linker, "/export:_YUV_blit_YV12@52=binkw32_._YUV_blit_YV12@52,@78")
+#pragma comment (linker, "/export:_YUV_init@4=binkw32_._YUV_init@4,@79")
+#pragma comment (linker, "/export:_radfree@4=binkw32_._radfree@4,@80")
+#pragma comment (linker, "/export:_radmalloc@4=binkw32_._radmalloc@4,@81")
 
 UCHAR twoByteJmp = 0xEB;
 
@@ -142,6 +143,8 @@ PVOID *LoadStub() {
 	}
 
 	CloseHandle(hFile);
+	
+	printf("Loaded %s\n", filePath);
 	return buffer;
 
 }
@@ -173,7 +176,85 @@ __declspec(naked) PVOID LoadFile(PkrFile *pkrFile, PVOID loadBuf, DWORD one) {
 
 UCHAR retOp = 0xC3;
 
+UINT8 **cheatListCode = NULL;
+DWORD maxAddress = 0;
+
+BOOL SetupNewCheatArray(DWORD newCheatCodes) {
+
+	if (!newCheatCodes)
+		return FALSE;
+
+	DWORD newCheatListSize = (0x005514A0 - 0x005513E0) + newCheatCodes * 4 * 2;
+	//Save the original cheat list
+	cheatListCode = malloc(newCheatListSize);
+	if (!cheatListCode)
+		return FALSE;
+
+	memset(cheatListCode, 0, newCheatListSize);
+	memcpy(cheatListCode, 0x005513E0, (DWORD)&cheatListCode[48] - (DWORD)&cheatListCode[0]);
+	
+	maxAddress = (DWORD)&cheatListCode[48 + (newCheatCodes-1) * 2];
+	return TRUE;
+}
+
+BOOL AddCheatCode(const char *code, const char *display) {
+
+	static DWORD addedCheatCodes = 0;
+
+	if (maxAddress < cheatListCode[48 + addedCheatCodes * 2]) {
+		MessageBoxA(NULL, "TOO MANY", "TOO MANY ADDED", 0);
+		return FALSE;
+	}
+
+	UINT8 *codeBuf = malloc(strlen(code) + 1);
+	if (!codeBuf)
+		return FALSE;
+	UINT8 *displayBuf = malloc(strlen(display) + 1);
+	if (!displayBuf) {
+		free(codeBuf);
+		return FALSE;
+	}
+
+	strcpy(codeBuf, code);
+	strcpy(displayBuf, display);
+	codeBuf[strlen(code)] = '\0';
+	displayBuf[strlen(display)] = '\0';
+
+	cheatListCode[48 + addedCheatCodes * 2] = codeBuf;
+	cheatListCode[48 + addedCheatCodes * 2 + 1] = displayBuf;
+	addedCheatCodes++;
+	return TRUE;
+}
+
 BOOL PatchPkrLoad(){
+
+	//Disable initial intros
+	if (!NopMemory(0x004707BE, 0x004707C3 - 0x004707BE))
+		return FALSE;
+	if (!NopMemory(0x004707C8, 0x004707CE - 0x004707C8))
+		return FALSE;
+	
+	//Custom cheat codes
+	#define NEW_CHEAT_CODES 3
+	if (!SetupNewCheatArray(NEW_CHEAT_CODES))
+		return FALSE;
+	if (!AddCheatCode("KRYSTAL", "HAS A HUGE DICK"))
+		return FALSE;
+	if (!AddCheatCode("TRUMP", "LOVES LASAGNA"))
+		return FALSE;
+	if (!AddCheatCode("ENGLAND", "IS A CITY"))
+		return FALSE;
+
+	if (!SetMemory(0x0047C44E, &cheatListCode, 4))
+		return FALSE;
+	DWORD displayTextAddress = (DWORD)cheatListCode + 4;
+	if (!SetMemory(0x0049E5E5, (UCHAR*)&displayTextAddress, 4))
+		return FALSE;
+	DWORD limitLoop = maxAddress + 4;
+	if (!SetMemory(0x0047C468, (UCHAR*)(&limitLoop), 4))
+		return FALSE;
+	if (!NopMemory(0x0047C3C4, 2))
+		return FALSE;
 
 	//Disable buffer allocation of pkr extracted file
 	if (!NopMemory(0x000519375, 0x005193A1 - 0x000519375))
@@ -232,11 +313,15 @@ BOOL NopMemory(DWORD address, DWORD size) {
 
 BOOL WINAPI DllMain(HINSTANCE hInst, DWORD reason, LPVOID reserved){
 
-	HMODULE bink = LoadLibraryA("bink32_.dll");
-	if (!bink) {
-		MessageBoxA(NULL, "ERROR", "Error loading original bink dll", 0);
-		return FALSE;
-	}
+	if(reason == DLL_PROCESS_ATTACH){
+		AllocConsole();
+		freopen("CONOUT$", "w", stdout);
+		HMODULE bink = LoadLibraryA("binkw32_.dll");
+		if (!bink) {
+			MessageBoxA(NULL, "ERROR", "Error loading original bink dll", 0);
+			return FALSE;
+		}
 
-	return PatchPkrLoad();
+		return PatchPkrLoad();
+	}
 }
