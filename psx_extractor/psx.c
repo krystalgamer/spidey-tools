@@ -114,28 +114,14 @@ bool SetupColorStuff(){
 		uint32_t unk4 = ((unk3 >> 2) & 0x33333333) ^ unk2;
 
 		unk1 ^= unk4;
-		unk4 <<= 2;
-		unk3 ^= unk4;
+		unk3 ^= (unk4 << 2);
 
-		unk2 = unk1 & 0x0F0F0F0F;
-		unk4 = (unk3 >> 4) & 0x0F0F0F0F;
-		unk4 ^= unk2;
+		unk4 = ((unk3 >> 4) & 0x0F0F0F0F) ^ (unk1 & 0x0F0F0F0F);
 		unk1 ^= unk4;
-		unk4 <<= 4;
-		unk3 ^= unk4;
+		unk3 ^= (unk4 << 4);
 		
-		unk2 = (unk1 & 0x00FF00FF);
-		unk4 = (unk3 >> 8) & 0x00FF00FF;
-		unk3 &= 0xFFFF;
-		unk4 ^= unk2;
-
-		unk2 = 0;
-		unk2 |= (unk4 & 0xFF) << 8;
-		
-		unk4 ^= unk1;
-		unk2 ^= unk3;
-		unk4 <<= 0x10;
-		unk2 |= unk4;
+		unk4 = ((unk3 >> 8) & 0x00FF00FF) ^ (unk1 & 0x00FF00FF);
+		unk2 = (((unk4 & 0xFF) << 8) ^ (unk3 & 0xFFFF)) | ((unk4 ^ unk1) << 16);
 		
 		colors[counter] = unk2;	
 		
@@ -172,7 +158,7 @@ Color GetV31(uint32_t curTexture, uint32_t v30){
 	return read;
 }
 
-bool DecompressTexture(PSXPVR *pvr){
+uint8_t *DecompressTexture(PSXPVR *pvr){
 	if(!pvr)
 		return false;
 
@@ -193,8 +179,10 @@ bool DecompressTexture(PSXPVR *pvr){
 	uint32_t curTexture = ftell(fp);
 	memset(textureBuffer, 0, 2 * pvr->width * pvr->height);
 
-	if(!actualHeight)
-		return textureBuffer;
+	if(!actualHeight){
+		free(textureBuffer);
+		return NULL;
+	}
 
 	uint32_t curHeight = 0;
 	uint32_t curWidth = 0;
@@ -219,12 +207,7 @@ bool DecompressTexture(PSXPVR *pvr){
 		curHeight++;
 	}while(curHeight < (pvr->height >> 1));
 	
-	FILE *merda = fopen("merda", "wb");
-	if(!merda)
-		return false;
-
-	fwrite(textureBuffer, 2 * pvr->width * pvr->height, 1, merda);
-	return true;	
+	return (uint8_t*)textureBuffer;	
 }
 
 bool ExtractTexture(uint32_t curTexture){
@@ -246,11 +229,27 @@ bool ExtractTexture(uint32_t curTexture){
 		return false;
 	}
 	
-	if(!DecompressTexture(&pvr))		
+	uint8_t *decompressed = DecompressTexture(&pvr);		
+	if(!decompressed)
 		return false;
+
+	char name[20];
+	sprintf(name, "%d", curTexture);
+
+	FILE *extract = fopen(name, "wb");
+	if(!extract)
+		return false;
+	if(!fwrite(decompressed, 2 * pvr.width * pvr.height, 1, extract)){
+		free(decompressed);
+		puts("Couldnt extract the file");
+		return false;
+	}
 	
-	//restore
+	free(decompressed);	
+	//restore file pointer
 	fseek(fp, currentOff, SEEK_SET);
+
+	return true;
 	
 }
 
@@ -298,14 +297,11 @@ int main(int argc, char *argv[]){
 	if(!SetupColorStuff())	
 		return 7;
 	
-	/*
 	for(int i = 0; i<numTextures; i++){
 		if(!ExtractTexture(i))
 			return 8;
 	}	
-	*/
-	if(!ExtractTexture(0))
-		return 8;
+
 
 	return 0;
 }
