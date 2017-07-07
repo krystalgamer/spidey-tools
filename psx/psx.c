@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 
@@ -149,7 +150,150 @@ void PrintColors(){
 }
 
 typedef struct{
-};
+	uint8_t unk[0x10];
+	uint16_t width;
+	uint16_t height;
+	uint32_t palette;
+}PSXPVR;
+
+typedef struct{
+	uint16_t value[4];
+}Color;
+
+Color GetV31(uint32_t curTexture, uint32_t v30){
+	uint8_t colorOffset;
+	fseek(fp, ((curTexture + 0x800) + v30), SEEK_SET);
+	fread(&colorOffset, 1, 1, fp);
+
+	Color read;
+	fseek(fp, curTexture + 8 * colorOffset, SEEK_SET);
+	fread(&read, sizeof(Color), 1, fp);
+
+	return read;
+}
+
+bool DecompressTexture(PSXPVR *pvr){
+	if(!pvr)
+		return false;
+
+	uint16_t actualWidth = pvr->width >> 1;
+	uint16_t actualHeight = pvr->height >> 1;
+	if(actualWidth >= actualHeight)
+		actualWidth = pvr->height >> 1;
+
+	uint32_t v20 = actualWidth - 1;
+	uint32_t v22 = 0, v32 = 0;
+	if(v20 & 1){
+
+		for(uint32_t i = 1; i & v20; i*=2, v22++);
+		v32=v22;
+	}
+
+	uint16_t *textureBuffer = malloc(2 * pvr->width * pvr->height);
+	if(!textureBuffer)
+		return false;
+
+	uint32_t curTexture = ftell(fp);
+	
+	memset(textureBuffer, 0, 2 * pvr->width * pvr->height);
+
+	uint32_t v24 = 0;
+	uint32_t v36 = v20;
+	uint32_t a2a = 0;
+	uint8_t *v48 = (uint8_t*)textureBuffer;
+	if(actualHeight){
+		uint32_t v25, v41;	
+		v25 = v41 = pvr->width * 2;
+		uint32_t v26 = pvr->width;
+		uint32_t v42 = pvr->width * 4;
+		uint32_t a1a = 1;
+
+		uint32_t v27 = 0;
+		uint32_t v28;
+		uint32_t v33;
+		uint32_t v34;
+		uint32_t v38;
+		uint32_t *v39;
+		uint8_t *v29;
+		Color v31;
+		uint32_t v37 = pvr->width;
+		uint32_t v30;
+
+		do{
+			v27 = 0;
+			if((pvr->width >> 1)){
+
+				v28 = a1a;
+				v38 = ~v20;
+				v33 = v26;
+		        v34 = v26 + 1;
+				v39 = &colors[v20 & v24];
+				v29 = v48; 
+				do{
+					v29 += 4;
+					v28 += 2;
+					v30 = *v39 | 2 * colors[v20 & v27] | ((v38 & (v24 | v27)) << v32);
+					v27++;
+					v31 = GetV31(curTexture, v30);
+					*(uint16_t*)(v29 - 4) = v31.value[0];
+					textureBuffer[v33] = v31.value[1];
+					textureBuffer[v28 - 2] = v31.value[2];
+					textureBuffer[v34] = v31.value[3];
+					v33 += 2;
+					v20 = v36;
+					v24 = a2a;
+					v34 += 2;
+
+				}while(v27 < (pvr->width >> 1));
+
+				v26 = v37;
+				v25 = pvr->width * 2;
+			}
+			++v24;
+			a1a += v25;
+			v26 += v25;
+			a2a = v24;
+			v37 = v26;
+			v48 += v42;
+		}while(v24 < (pvr->height >> 1));
+		
+	}
+	
+	FILE *merda = fopen("merda", "wb");
+	if(!merda)
+		return false;
+
+	fwrite(textureBuffer, 2 * pvr->width * pvr->height, 1, merda);
+	return true;	
+}
+
+bool ExtractTexture(uint32_t curTexture){
+	
+	uint32_t textureOff;
+	if(!fread(&textureOff, 4, 1, fp))
+		return false;
+	//save current offset
+	uint32_t currentOff = ftell(fp);
+
+	PSXPVR pvr;
+	fseek(fp, textureOff, SEEK_SET);
+	if(!fread(&pvr, sizeof(pvr), 1, fp))
+		return false;
+	fseek(fp, 4, SEEK_CUR);
+	
+	if((pvr.palette & 0xFF00) != 0x300){
+		puts("Not implement yet.");
+		return false;
+	}
+	
+	if(!DecompressTexture(&pvr))		
+		return false;
+	
+	//restore
+	fseek(fp, currentOff, SEEK_SET);
+	
+}
+
 int main(int argc, char *argv[]){
 
 	if(argc != 2)
@@ -190,10 +334,18 @@ int main(int argc, char *argv[]){
 		   	mem.add1[0], mem.add1[1],mem.add1[2], v13, v101, v35, v41);
 	
 	printf("There are %d textures.\n", numTextures);
-	GetTexturesAdd(numTextures);
 
 	if(!SetupColorStuff())	
 		return 7;
+	
+	/*
+	for(int i = 0; i<numTextures; i++){
+		if(!ExtractTexture(i))
+			return 8;
+	}	
+	*/
+	if(!ExtractTexture(0))
+		return 8;
 
 	return 0;
 }
