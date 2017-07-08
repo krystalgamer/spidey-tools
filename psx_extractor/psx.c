@@ -109,9 +109,8 @@ bool SetupColorStuff(){
 		//unk4 ecx
 		//loc_5115EB
 		uint32_t unk1 = (counter >> 1) & 0x55555555;
-		uint32_t unk2 = unk1 & 0x33333333;
 		uint32_t unk3 = (unk1 * 2) ^ counter;
-		uint32_t unk4 = ((unk3 >> 2) & 0x33333333) ^ unk2;
+		uint32_t unk4 = ((unk3 >> 2) & 0x33333333) ^ ((counter >> 1) & 0x11111111);
 
 		unk1 ^= unk4;
 		unk3 ^= (unk4 << 2);
@@ -121,9 +120,8 @@ bool SetupColorStuff(){
 		unk3 ^= (unk4 << 4);
 		
 		unk4 = ((unk3 >> 8) & 0x00FF00FF) ^ (unk1 & 0x00FF00FF);
-		unk2 = (((unk4 & 0xFF) << 8) ^ (unk3 & 0xFFFF)) | ((unk4 ^ unk1) << 16);
 		
-		colors[counter] = unk2;	
+		colors[counter] = (((unk4 & 0xFF) << 8) ^ (unk3 & 0xFFFF)) | ((unk4 ^ unk1) << 16);	
 		
 	}
 
