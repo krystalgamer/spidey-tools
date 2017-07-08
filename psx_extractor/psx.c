@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "psx.h"
 
 
 typedef struct{
@@ -96,43 +97,6 @@ void GetTexturesAdd(uint32_t numTextures){
 	}
 }
 
-uint32_t colors[0x400];
-
-bool SetupColorStuff(){
-	memset(colors, 0, 0x400 * 4);
-
-	for(uint32_t counter = 0; counter<0x400; counter++){
-	
-		//unk1 eax
-		//unk2 edx
-		//unk3 esi
-		//unk4 ecx
-		//loc_5115EB
-		uint32_t unk1 = (counter >> 1) & 0x55555555;
-		uint32_t unk3 = (unk1 * 2) ^ counter;
-		uint32_t unk4 = ((unk3 >> 2) & 0x33333333) ^ ((counter >> 1) & 0x11111111);
-
-		unk1 ^= unk4;
-		unk3 ^= (unk4 << 2);
-
-		unk4 = ((unk3 >> 4) & 0x0F0F0F0F) ^ (unk1 & 0x0F0F0F0F);
-		unk1 ^= unk4;
-		unk3 ^= (unk4 << 4);
-		
-		unk4 = ((unk3 >> 8) & 0x00FF00FF) ^ (unk1 & 0x00FF00FF);
-		
-		colors[counter] = (((unk4 & 0xFF) << 8) ^ (unk3 & 0xFFFF)) | ((unk4 ^ unk1) << 16);	
-		
-	}
-
-	return true;
-}
-
-void PrintColors(){
-	for(uint32_t i = 0; i<0x400; i++)
-		printf("%08X ", colors[i]);
-}
-
 typedef struct{
 	uint8_t unk[0x10];
 	uint16_t width;
@@ -156,6 +120,8 @@ Color GetV31(uint32_t curTexture, uint32_t v30){
 	return read;
 }
 
+
+uint32_t *bruijn = (uint32_t*)&_bruijn[0];
 uint8_t *DecompressTexture(PSXPVR *pvr){
 	if(!pvr)
 		return false;
@@ -191,8 +157,8 @@ uint8_t *DecompressTexture(PSXPVR *pvr){
 		curWidth = 0;
 		if((pvr->width >> 1)){
 			do{
-				v30 = colors[v20 & curHeight]
-					| 2 * colors[v20 & curWidth] | ((~v20 & (curHeight | curWidth)) << v32);
+				v30 = bruijn[v20 & curHeight]
+					| 2 * bruijn[v20 & curWidth] | ((~v20 & (curHeight | curWidth)) << v32);
 				v31 = GetV31(curTexture, v30);
 
 				textureBuffer[curHeight * pvr->width * 2 + curWidth * 2] = v31.value[0];
@@ -292,9 +258,6 @@ int main(int argc, char *argv[]){
 	
 	printf("There are %d textures.\n", numTextures);
 
-	if(!SetupColorStuff())	
-		return 7;
-	
 	for(int i = 0; i<numTextures; i++){
 		if(!ExtractTexture(i))
 			return 8;
