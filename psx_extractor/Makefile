@@ -1,7 +1,7 @@
 CC= gcc
 LIBS = 
-OBJ = psx.o 
-CFLAGS = -std=c11 -g
+OBJ = psx.o bmp.o
+CFLAGS = -std=c11 -g -mno-ms-bitfields
 all: psx 
 
 %.o: %.c

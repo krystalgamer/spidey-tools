@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "psx.h"
 
+bool WriteBmpFile(uint8_t *buffer, uint32_t width, uint32_t height, uint32_t curTexture);
 
 typedef struct{
 	uint8_t unk[0xC];//Includes the name
@@ -192,23 +193,17 @@ bool ExtractTexture(uint32_t curTexture){
 		puts("Not implement yet.");
 		return false;
 	}
-	
+
 	uint8_t *decompressed = DecompressTexture(&pvr);		
 	if(!decompressed)
 		return false;
 
-	char name[20];
-	sprintf(name, "%d", curTexture);
-
-	FILE *extract = fopen(name, "wb");
-	if(!extract)
-		return false;
-	if(!fwrite(decompressed, 2 * pvr.width * pvr.height, 1, extract)){
+	if(!WriteBmpFile(decompressed, pvr.width, pvr.height, curTexture)){
 		free(decompressed);
-		puts("Couldnt extract the file");
 		return false;
 	}
 	
+
 	free(decompressed);	
 	//restore file pointer
 	fseek(fp, currentOff, SEEK_SET);
@@ -262,7 +257,6 @@ int main(int argc, char *argv[]){
 		if(!ExtractTexture(i))
 			return 8;
 	}	
-
 
 	return 0;
 }
