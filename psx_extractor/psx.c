@@ -203,13 +203,11 @@ bool ExtractTexture(uint32_t curTexture){
 		return false;
 	}
 	
-
 	free(decompressed);	
 	//restore file pointer
 	fseek(fp, currentOff, SEEK_SET);
 
 	return true;
-	
 }
 
 int main(int argc, char *argv[]){
