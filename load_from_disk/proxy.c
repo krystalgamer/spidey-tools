@@ -94,6 +94,7 @@ UCHAR twoByteJmp = 0xEB;
 typedef struct {
 	char name[0x20];
 	DWORD crc;
+	DWORD compressed;
 	DWORD fileOffset;
 	DWORD uncompressedSize;
 	DWORD compressedSize;
@@ -103,7 +104,7 @@ char *originalDirectory;
 char filePath[100];
 DWORD filePathAdd = &filePath[0];//yes...
 
-PVOID *LoadStub() {
+PVOID *LoadStub(PkrFile *pkrFile) {
 
 	HANDLE hFile = CreateFile(filePath, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
 		NULL);
@@ -119,6 +120,7 @@ PVOID *LoadStub() {
 		MessageBoxA(NULL, "Error getting size", "dammit", 0);
 		return NULL;
 	}
+	pkrFile->uncompressedSize = fileSize;
 
 	UCHAR *buffer = malloc(fileSize);
 	if (!buffer) {
@@ -149,6 +151,9 @@ PVOID *LoadStub() {
 
 }
 
+char *mystrcpy(char * dest, char *src) {
+	return strcpy(dest, src);
+}
 __declspec(naked) PVOID LoadFile(PkrFile *pkrFile, PVOID loadBuf, DWORD one) {
 
 	__asm {
@@ -159,7 +164,7 @@ __declspec(naked) PVOID LoadFile(PkrFile *pkrFile, PVOID loadBuf, DWORD one) {
 		//Setups the path
 		push originalDirectory
 		push filePathAdd
-		call strcpy
+		call mystrcpy
 		add esp, 8
 
 		push 0x20
@@ -168,7 +173,9 @@ __declspec(naked) PVOID LoadFile(PkrFile *pkrFile, PVOID loadBuf, DWORD one) {
 		call strncat
 		add esp, 0xC
 
+		push [esp+4]
 		call LoadStub
+		add esp,4
 		ret
 	}
 
