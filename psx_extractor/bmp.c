@@ -3,8 +3,11 @@
 #include <stdint.h>
 #include <string.h>
 
+extern bool nameAsAdd;
+
 typedef struct __attribute__((packed)){ 
-	uint16_t type; uint32_t size;
+	uint16_t type; 
+	uint32_t size;
 	uint16_t reserved1, reserved2;
 	uint32_t offBits;
 }BmpFileHeader;
@@ -31,7 +34,7 @@ typedef struct __attribute__((packed)){
 	BmpImageHeader image; 
 }Bmp;
 
-bool WriteBmpFile(uint8_t *buffer, uint32_t width, uint32_t height, uint32_t curTexture){
+bool WriteBmpFile(uint8_t *buffer, uint32_t width, uint32_t height, uint32_t fileName){
 	
 	static Bmp extracted;
 	memset(&extracted, 0, sizeof(Bmp));
@@ -58,7 +61,7 @@ bool WriteBmpFile(uint8_t *buffer, uint32_t width, uint32_t height, uint32_t cur
 	extracted.image.greenMask = 0x07E0;
 
 	char extractedName[32];
-	sprintf(extractedName, "%d.bmp", curTexture);
+	sprintf(extractedName, (nameAsAdd ? "%08X.bmp" : "%d.bmp"), fileName);
 
 	FILE *fp = fopen(extractedName, "wb");
 	if(!fp)

@@ -15,6 +15,7 @@ typedef struct{
 }Mem;
 
 FILE *fp = NULL;
+bool nameAsAdd = false;
 
 bool GetAdd1(Mem *mem){
 	
@@ -35,8 +36,7 @@ bool GetAdd1(Mem *mem){
 		if(!fread(&newAdd, 4, 1, fp))
 			return false;
 
-		mem->add1[0] += 4;
-		mem->add1[0] += newAdd + 4;
+		mem->add1[0] += newAdd + 8;
 
 		fseek(fp, mem->add1[0], SEEK_SET);
 		if(!fread(&newAdd, 4, 1, fp))
@@ -103,6 +103,7 @@ typedef struct{
 	uint16_t width;
 	uint16_t height;
 	uint32_t palette;
+	uint32_t size;
 }PSXPVR;
 
 typedef struct{
@@ -187,10 +188,9 @@ bool ExtractTexture(uint32_t curTexture){
 	fseek(fp, textureOff, SEEK_SET);
 	if(!fread(&pvr, sizeof(pvr), 1, fp))
 		return false;
-	fseek(fp, 4, SEEK_CUR);
 	
 	if((pvr.palette & 0xFF00) != 0x300){
-		puts("Not implement yet.");
+		printf("Not implement yet %08X.\n", pvr.palette);
 		return false;
 	}
 
@@ -198,7 +198,7 @@ bool ExtractTexture(uint32_t curTexture){
 	if(!decompressed)
 		return false;
 
-	if(!WriteBmpFile(decompressed, pvr.width, pvr.height, curTexture)){
+	if(!WriteBmpFile(decompressed, pvr.width, pvr.height, (nameAsAdd ? textureOff + 0x1C : curTexture))){
 		free(decompressed);
 		return false;
 	}
@@ -212,8 +212,10 @@ bool ExtractTexture(uint32_t curTexture){
 
 int main(int argc, char *argv[]){
 
-	if(argc != 2)
+	if(argc < 2){
+		printf("Format is:\n%s filename (-a)\n-a flag is to output the filenames as addresses", argv[0]);
 		return 1;
+	}
 
 	fp = fopen(argv[1], "rb");
 	if(!fp){
@@ -250,6 +252,12 @@ int main(int argc, char *argv[]){
 		   	mem.add1[0], mem.add1[1],mem.add1[2], v13, v101, v35, v41);
 	
 	printf("There are %d textures.\n", numTextures);
+
+	if(argc == 3)
+		if(!strcmp(argv[2], "-a")){
+			puts("Filenames will be their addresses!");
+			nameAsAdd = true;
+		}
 
 	for(int i = 0; i<numTextures; i++){
 		if(!ExtractTexture(i))
