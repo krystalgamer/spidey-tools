@@ -129,6 +129,18 @@ class Decoder():
        self.curInsn+=2
        return
 
+    def SetSkyColor(self):
+       print('SetSkyColor %x' % int.from_bytes(self.fileBuffer[self.curInsn : self.curInsn + 4], byteorder = 'big'))
+       self.curInsn+=4
+       return
+
+    def BackgroundCreate(self):
+       #TODO how the following bytes are interpreted
+       print('BackgroundCreate TBI')
+       self.curInsn = ((self.curInsn + 3) & 0xFFFFFFFC) + 10
+       return
+         
+
 
     opFuncList = { b'\x8C\x00' : SetRestart,
             b'\x2E\x01' : EndLevelNode, b'\x93\x00' : SetGameLevel,
@@ -137,7 +149,8 @@ class Decoder():
             b'\xBD\x00' : SpoolCodeModule, b'\x84\x00' : BackgroundOff,
             b'\xFF\xFF' : Terminate, b'\x68\x00' : SetFoggingParam,
             b'\xA9\x00' : SetOTPushback2, b'\xA6\x00' : SetOTPushback,
-            b'\xB4\x00' : SetSpideyCamValue, b'\xD9\x00' : AllowCamLOSCheck}
+            b'\xB4\x00' : SetSpideyCamValue, b'\xD9\x00' : AllowCamLOSCheck,
+            b'\xCA\x00' : SetSkyColor, b'\xAB\x00' : BackgroundCreate}
 
     def Decode(self, index):
        #index of the op code to decode
