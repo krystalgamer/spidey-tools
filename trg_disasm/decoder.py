@@ -101,13 +101,43 @@ class Decoder():
 
     def Terminate(self):
        return True
+    
+    def SetFoggingParam(self):
+       #TODO parameters are ignored by now
+       print('SetFoggingParam (needs to be worked)')
+       self.curInsn+=6
+       return
+
+    def SetOTPushback2(self):
+       print('SetOTPushback2 %d' % int.from_bytes(self.fileBuffer[self.curInsn : self.curInsn + 2], byteorder = 'little') )
+       self.curInsn+=2
+       return
+    def SetOTPushback(self):
+       print('SetOTPushback %d' % int.from_bytes(self.fileBuffer[self.curInsn : self.curInsn + 2], byteorder = 'little') )
+       self.curInsn+=2
+       return
+
+    def SetSpideyCamValue(self):
+       #TODO figure the meaning of the values
+       print('SetSpideyCamValue')
+       self.curInsn += 10
+       return
+
+    def AllowCamLOSCheck(self):
+       #If different than 0 sets a variable to 1, if not 0
+       print('AllowCamLOSCheck %d' % int.from_bytes(self.fileBuffer[self.curInsn : self.curInsn + 2], byteorder = 'little'))
+       self.curInsn+=2
+       return
+
 
     opFuncList = { b'\x8C\x00' : SetRestart,
             b'\x2E\x01' : EndLevelNode, b'\x93\x00' : SetGameLevel,
             b'\xBE\x00' : RunCinema, b'\x7E\x00' : SpoolIn,
             b'\x80\x00' : SpoolEnv, b'\x8E\x00' : SetObjFile,
             b'\xBD\x00' : SpoolCodeModule, b'\x84\x00' : BackgroundOff,
-            b'\xFF\xFF' : Terminate}
+            b'\xFF\xFF' : Terminate, b'\x68\x00' : SetFoggingParam,
+            b'\xA9\x00' : SetOTPushback2, b'\xA6\x00' : SetOTPushback,
+            b'\xB4\x00' : SetSpideyCamValue, b'\xD9\x00' : AllowCamLOSCheck}
 
     def Decode(self, index):
        #index of the op code to decode

@@ -46,6 +46,8 @@ class Disassembler():
         return True
 
     def StartDisasm(self):
+
+        #First part
         for counter in range(self.numInsn):
             tmpPos = 0xC + (counter * 4) 
             tmpPos = int.from_bytes(self.fileBuffer[tmpPos : tmpPos + 4], byteorder='little') 
@@ -53,6 +55,10 @@ class Disassembler():
                 continue
             
             self.decoder.Decode(tmpPos + 2) 
+        #second related to restart node
+        #TODO find the restart node position
+        #And start of instruction part 
+        self.decoder.Decode(0x1C2)#l4a1 specific
 
         
         return
