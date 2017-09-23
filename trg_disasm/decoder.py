@@ -2,7 +2,6 @@
 class Decoder():
 
     def __init__(self, fileBuffer):
-        self.opList = None
         self.fileBuffer = fileBuffer
         self.curInsn = 0
 
@@ -139,7 +138,91 @@ class Decoder():
        print('BackgroundCreate TBI')
        self.curInsn = ((self.curInsn + 3) & 0xFFFFFFFC) + 10
        return
-         
+
+    def SetBaddyVisibilityInBox(self):
+        #TODO implment this
+        v60 = self.curInsn + 4
+        if not self.fileBuffer[v60 : v60+2] == b'\xFF\x00':
+            print('SetBaddyVisibilityInBox not implemented')
+            return
+        else:
+            print('SetBaddyVisibilityInBox implemented')
+            self.curInsn = v60 + 2
+
+        return
+    def SendPulse(self):
+        print('SendPulse partially implemented')
+
+        #v268 needs to be implemented 
+        #a2 too
+        v268 = 0
+        a2 = 0
+        if not v268:
+            comPos = 0xC + 4 * a2
+            comPos = int.from_bytes(self.fileBuffer[comPos : comPos + 2], byteorder = 'little')
+            command = int.from_bytes(self.fileBuffer[comPos : comPos + 2], byteorder = 'little')
+            if command <= 13:
+                if command < 12:
+                    #improve this
+                    if command == 2 or command == 3 or command == 6 or command == 8 or command == 9 or command == 10:
+                        print('This path' + str(command))
+                        self.ProcessCommandsF(comPos + 2)
+                        return
+                    elif command == 1:
+                        print('That path')
+                    elif command == 5:
+                        print('Another path')
+                    else:
+                        print("No path")
+
+
+            if command > 0x3E9:
+                if command != 0x3EA:
+                    print('I FUCKED')
+            else:
+                if command >= 0x3E8:
+                    print('FIne?')
+                if command != 0x14:
+                    print('Unrecognized node type')
+        return
+
+    def ProcessCommandsF(self, comPos):
+        numCom = int.from_bytes(self.fileBuffer[comPos : comPos + 2], byteorder = 'little')
+        if numCom <= 0:
+            print('I\'ve not implemented it')
+            return
+        print('There are %d commands' % numCom)
+
+        v249 = comPos + 2
+        while True:
+            v152 = int.from_bytes(self.fileBuffer[v249 : v249 + 2], byteorder = 'little')
+            print('Sending pulse to node: %d' % v152)
+            v153 = 0xC + 4 * v152
+            v153 = int.from_bytes(self.fileBuffer[v153 : v153 + 2], byteorder = 'little')
+            v153 = int.from_bytes(self.fileBuffer[v153 : v153 + 2], byteorder = 'little')
+
+            if v153 == 1 or v153 == 5 or v153 == 7 or v153 == 20:
+                print('Calls create baddy (implement it)')
+                #TODO CreayeBaddy
+            elif v153 == 6:
+                if v153 != 6:
+                    print('God have mercy on me')
+
+                print('Related to pending commands')
+            else:
+                print('Default case')
+                return
+            #TODO create the pulse queue
+
+            v249+=2
+            numCom-=1
+            if numCom == 0:
+                #TODO a lot of stuff missing
+                
+                print('Gotta do it')
+                return
+
+        return
 
 
     opFuncList = { b'\x8C\x00' : SetRestart,
@@ -150,7 +233,8 @@ class Decoder():
             b'\xFF\xFF' : Terminate, b'\x68\x00' : SetFoggingParam,
             b'\xA9\x00' : SetOTPushback2, b'\xA6\x00' : SetOTPushback,
             b'\xB4\x00' : SetSpideyCamValue, b'\xD9\x00' : AllowCamLOSCheck,
-            b'\xCA\x00' : SetSkyColor, b'\xAB\x00' : BackgroundCreate}
+            b'\xCA\x00' : SetSkyColor, b'\xAB\x00' : BackgroundCreate,
+            b'\x8D\x00' : SetBaddyVisibilityInBox, b'\x03\x00' : SendPulse}
 
     def Decode(self, index):
        #index of the op code to decode

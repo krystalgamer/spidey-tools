@@ -58,8 +58,8 @@ class Disassembler():
         #second related to restart node
         #TODO find the restart node position
         #And start of instruction part 
+        print('Nova parte')
         self.decoder.Decode(0x1C2)#l4a1 specific
-
         
         return
         
