@@ -165,9 +165,7 @@ class Decoder():
                 if command < 12:
                     #improve this
                     if command == 2 or command == 3 or command == 6 or command == 8 or command == 9 or command == 10:
-                        print('This path' + str(command))
-                        self.ProcessCommandsF(comPos + 2)
-                        return
+                        return self.ProcessCommandsF(comPos + 2)
                     elif command == 1:
                         print('That path')
                     elif command == 5:
@@ -194,7 +192,7 @@ class Decoder():
         print('There are %d commands' % numCom)
 
         v249 = comPos + 2
-        while True:
+        while numCom:
             v152 = int.from_bytes(self.fileBuffer[v249 : v249 + 2], byteorder = 'little')
             print('Sending pulse to node: %d' % v152)
             v153 = 0xC + 4 * v152
@@ -212,17 +210,17 @@ class Decoder():
             else:
                 print('Default case')
                 return
-            #TODO create the pulse queue
-
             v249+=2
             numCom-=1
-            if numCom == 0:
-                #TODO a lot of stuff missing
-                
-                print('Gotta do it')
-                return
 
-        return
+        #TODO add missing parts
+        print('Command list ended')
+        if self.fileBuffer[self.curInsn : self.curInsn + 2] != b'\xFF\xFF':
+            print('More instructions to come')
+            return#More to come
+        #TODO something related to missing if statements
+        return True
+
 
 
     opFuncList = { b'\x8C\x00' : SetRestart,
