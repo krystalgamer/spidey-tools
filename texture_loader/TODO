@@ -1,0 +1,10 @@
+Refactor the code and make it actually something usable
+--Initial Steps
+-Integrate the gcc/msvsc export macro
+--Memory file
+-Initial intros
+File loader
+Texture loader
+Cheat codes
+Custom skins
+Render strings
