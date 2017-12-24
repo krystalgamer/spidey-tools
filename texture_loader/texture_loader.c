@@ -1,4 +1,4 @@
-#include "memory.h"
+#include "patches.h"
 
 BOOL ApplyHooks();
 
@@ -6,6 +6,12 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 	if(fdwReason == DLL_PROCESS_ATTACH){
 
 		//Console is now allocated only with -console directive
+		AllocConsole();
+		if(!freopen("COUNOUT$", "w", stdout)){
+			MessageBoxA(NULL, "Error", "Couldn't allocate console...Closing", 0);
+			return FALSE;
+		}
+
 		//Not really
 		char *args = GetCommandLine();
 		if (!GetModuleHandle("binkw32.dll")){
@@ -15,6 +21,7 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 		}
 
 		return ApplyHooks();
+		NopMemory()
 	}
 
 	return TRUE;
@@ -23,12 +30,6 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 
 BOOL ApplyHooks(){
 
-	//Disable initial intros
-	if (!NopMemory(0x004707BE, 0x004707C3 - 0x004707BE, "Disables wrapper for Bink functions."))
-		return FALSE;
-	if (!NopMemory(0x004707C8, 0x004707CE - 0x004707C8, "Unknown, related to some global var"))
-		return FALSE;
-	
-	return TRUE;
+	return (ApplyHooks());
 
 }

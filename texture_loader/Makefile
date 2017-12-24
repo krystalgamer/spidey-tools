@@ -1,6 +1,6 @@
 CC= gcc
 LIBS = 
-OBJ = texture_loader.o memory.o
+OBJ = texture_loader.o memory.o patches.o
 CFLAGS = -std=c11 -g
 all: texture 
 

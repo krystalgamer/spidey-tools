@@ -6,6 +6,7 @@ class Disassembler():
     def __init__(self, fileName):
         self.curPos = 0 #Cur pos on disasm
         self.numInsn = 0 #Total number of instructions
+        self.restartNode = 0
         self.fileBuffer = self.ReadWholeFile(fileName) #Contains file buffer
         self.decoder = Decoder(self.fileBuffer)
         print(fileName + ' was successfully read!')
@@ -47,16 +48,50 @@ class Disassembler():
 
     def StartDisasm(self):
 
-        #First part
+        #Second part(Exec autoexec)
         for counter in range(self.numInsn):
             tmpPos = 0xC + (counter * 4) 
             tmpPos = int.from_bytes(self.fileBuffer[tmpPos : tmpPos + 4], byteorder='little') 
             if not self.fileBuffer[tmpPos : tmpPos + 2] == b'\x04\x00':
                 continue
             
+            print('Executing AUTOEXEC')
             self.decoder.Decode(tmpPos + 2) 
-        #second related to restart node
+
+        #Third part parse TRG
+        for counter in range(self.numInsn):
+            tmpPos = 0xC + (counter * 4) 
+            tmpPos = int.from_bytes(self.fileBuffer[tmpPos : tmpPos + 4], byteorder='little') 
+            command = int.from_bytes(self.fileBuffer[tmpPos : tmpPos + 2], byteorder='little')
+
+            #command>0x14 doesnt do shit so ignore it(calls DoAssert)
+            #command==0x14 same shit(Trig_GetPosition but never uses the result) 
+            if command < 0x14:
+                if command == 1:
+                    #Makes sure there's a terminator node
+                    v4 = tmpPos + 2 * int.from_bytes(self.fileBuffer[tmpPos + 6: tmpPos + 8], byteorder='little') + 8
+                    while self.fileBuffer[v4] != b'\xFF':
+                        #Crashes if there's no terminator part
+                        v4+=1
+                if command command:w
+
+
+            
+            print('Executing AUTOEXEC')
+            self.decoder.Decode(tmpPos + 2) 
+
+
+        return
+
         #TODO find the restart node position
+        if self.restartNode == 0xFFFF:
+            print('No restart node set... Quitting')
+            return
+        nodePos = 0xC + 4 * self.restartNode 
+        if self.fileBuffer[nodePos : nodePos + 2] != b'\x08\x00':
+            print('Not a restart node? Not running')
+            return
+
         #And start of instruction part 
         print('Nova parte')
         self.decoder.Decode(0x1C2)#l4a1 specific
