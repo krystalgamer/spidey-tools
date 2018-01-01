@@ -25,7 +25,6 @@ BOOL FileLoader(){
 	Set(0x0051938B, 1, &twoByteJmp, "Patch jnz after buffer allocation")
 	Nop(0x005193C5, 5, "Disable FreadWrapper")
 	Set(0x005193D0, 1, &twoByteJmp, "Patch jnz after Fread wrapper")
-	Set(0x005193D0, 1, &twoByteJmp, "Patch jnz after Fread wrapper")
 
 	return TRUE;
 
