@@ -3,5 +3,6 @@
 #include "memory.h"
 
 BOOL DisableIntros();
+BOOL FileLoader();
 
 #endif

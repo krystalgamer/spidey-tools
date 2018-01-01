@@ -12,3 +12,6 @@ texture: $(OBJ)
 
 clean:
 		rm -rf *.o
+
+install:
+	mv texture.dll /e/Activision/Spider-Man/binkw32.dll

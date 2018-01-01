@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <windows.h>
 
-BOOL NopMemory(DWORD addr, DWORD size, CHAR* reason);
-BOOL SetMemory(DWORD addr, UCHAR *buffer, DWORD size);
+BOOL NopMemory(DWORD addr, DWORD size, const char *reason);
+BOOL SetMemory(DWORD addr, DWORD size, const unsigned char *buffer, const char *reason);
 
 #endif

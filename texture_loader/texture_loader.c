@@ -7,7 +7,6 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 
 	if(fdwReason == DLL_PROCESS_ATTACH){
 
-		
 		//Console is now allocated only with -console directive
 		AllocConsole();
 		if(!freopen("CONOUT$", "w", stdout)){
@@ -15,15 +14,15 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 			return FALSE;
 		}
 
-	//	//Not really
-	//	char *args = GetCommandLine();
+		//Not really
+		//char *args = GetCommandLine();
 		if (!GetModuleHandle("binkw32.dll")){
 			printf("Original binkw32 doesn't seem to be loaded...Quitting");
 			MessageBoxA(NULL, "Error", "Couldn't get an handle to the original binkw32", 0);
 			return FALSE;
 		}
 
-		//return ApplyHooks();
+		return ApplyHooks();
 	}
 
 	return TRUE;
@@ -32,5 +31,5 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 
 BOOL ApplyHooks(){
 
-	return (DisableIntros());
+	return (DisableIntros() && FileLoader());
 }
