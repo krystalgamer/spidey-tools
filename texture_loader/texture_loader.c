@@ -1,6 +1,8 @@
 #include "patches.h"
 #include "forwards.h"
 
+#define CTL_VERSION "0.3"
+
 BOOL ApplyHooks();
 
 BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
@@ -13,6 +15,8 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 			MessageBoxA(NULL, "Error", "Couldn't allocate console...Closing", 0);
 			return FALSE;
 		}
+
+		printf("Custom texture loader v%s\n", CTL_VERSION);
 
 		//Not really
 		//char *args = GetCommandLine();
