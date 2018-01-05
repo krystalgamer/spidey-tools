@@ -15,7 +15,7 @@ sub esp, 8
 mov eax, [esp+12]
 mov [fileName], eax
 mov eax, [esp+24]
-mov [fileName], eax
+mov [directory], eax
 
 
 mov esp, ebp

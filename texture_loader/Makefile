@@ -1,7 +1,7 @@
 CC= gcc
 AC= nasm
 LIBS = 
-OBJ = texture_loader.o memory.o patches.o
+OBJ = loader.o memory.o patches.o
 AOBJ = crchook.obj
 CFLAGS = -std=gnu11 -g
 all: texture 

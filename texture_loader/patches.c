@@ -23,8 +23,10 @@ BOOL FileLoader(){
 
 	Nop(0x00519376, 5, "Disable buffer allocation")
 	Set(0x0051938B, 1, &twoByteJmp, "Patch jnz after buffer allocation")
-	Nop(0x005193AD, 5,"Disable fseek")
-	Nop(0x005193C5, 5, "Disable FreadWrapper")
+	//Nop(0x005193AD, 5,"Disable fseek")
+	//Nop(0x005193C5, 5, "Disable FreadWrapper")
+	//Hooking here might be actually better since I have access to the handle of the file
+	//which I can use to load the file if it fails loading from the disk
 	Set(0x005193D0, 1, &twoByteJmp, "Patch jnz after Fread wrapper")
 	Nop(0x00519407, 5, "Disable the decompression routine")
 
