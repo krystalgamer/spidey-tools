@@ -35,3 +35,22 @@ BOOL FileLoader(){
 	
 	return TRUE;
 }
+
+PVOID LoadFromHandle(FILE *fp, DWORD size){
+
+	PVOID buffer = malloc(size);
+	if(!buffer){
+		MessageBoxA(NULL, "Was unable to create buffer", "Closing", 0);
+		return NULL;
+	}
+
+	if(!fread(buffer, size, 1, fp)){
+		MessageBoxA(NULL, "Was unable to read file from handle", "Closing", 0);
+		free(buffer);
+		return NULL;
+	}
+
+	return buffer;
+
+
+}
