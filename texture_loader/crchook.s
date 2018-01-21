@@ -1,21 +1,37 @@
+section .data
+
+openText db "Opening file %s\0"
+
 section .text
+
+%define buffer ebp+4
+%define fileSize ebp+8
+%define fileHandle ebp+10
 
 %define fileName ebp-4
 %define directory ebp-8
+%define path ebp-0xC
+%define pathLen ebp-0x10
 
+global _FreadHook
 
-global _CrcHook
+extern _fopen, _fread, _fread, _fclose
 
-_CrcHook:
+_FreadHook:
 push ebp
 mov ebp, esp
-sub esp, 8
+sub esp, 0x10
 
-;get file name and directory
-mov eax, [esp+12]
+;filename is from the walk pkr part in PKR_ReadFile
+; cant take it from the arguments to the function since
+; it passes all lower cases and compares with strcmpi(insesitive)
+mov eax, [ebp+0x2C]
 mov [fileName], eax
-mov eax, [esp+24]
+mov eax, [ebp+0xAC]
 mov [directory], eax
+
+push [fileName]
+
 
 
 mov esp, ebp

@@ -4,5 +4,6 @@
 
 BOOL DisableIntros();
 BOOL FileLoader();
+BOOL HookFunc();
 
 #endif

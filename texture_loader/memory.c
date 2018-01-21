@@ -27,7 +27,8 @@ BOOL NopMemory(DWORD address, DWORD size, const char *reason){
 		return FALSE;
 	}
 
-	printf("Successfully patched address:%08X Reason: %s\n", cAddress ,reason);
+	if(reason)
+		printf("Successfully patched address:%08X Reason: %s\n", cAddress ,reason);
 
 	return TRUE;
 }
@@ -54,7 +55,30 @@ BOOL SetMemory(DWORD address, DWORD size, const unsigned char *buffer, const cha
 		return FALSE;
 	}
 
-	printf("Successfully patched address:%08X Reason: %s\n", cAddress ,reason);
+	if(reason)
+		printf("Successfully patched address:%08X Reason: %s\n", cAddress ,reason);
 
+	return TRUE;
+}
+
+/*
+ * callAdd - the address that contains the CALL XXXX
+ * funcAdd - Address of the function
+ *
+ */
+
+BOOL HookFunc(DWORD callAdd, DWORD funcAdd, const unsigned char *reason){
+	
+	//Only works for E9 hooks	
+	DWORD jmpOff = funcAdd - callAdd - 5;
+	
+	if(!SetMemory(callAdd + 1, 4, (unsigned char *)&jmpOff, NULL)){
+		printf("Was unable to hook address: %08X\n", callAdd);
+		return FALSE;
+	}
+
+	if(reason)
+		printf("Hook: %08X -  %s", callAdd, reason);
+	
 	return TRUE;
 }
