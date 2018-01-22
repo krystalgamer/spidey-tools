@@ -22,7 +22,8 @@ BOOL DisableIntros(){
 
 BOOL FileLoader(){
 
-	Nop(0x005193AD, 5,"Disable fseek")
+	Nop(0x00519376, 5,"Disable memory allocation")
+	Set(0x0051938B, 1, &twoByteJmp, "Disable check after memory allocation")
 	//Nop(0x005193C5, 5, "Disable FreadWrapper")
 	//Hooking here might be actually better since I have access to the handle of the file
 	//which I can use to load the file if it fails loading from the disk
@@ -34,21 +35,11 @@ BOOL FileLoader(){
 	return TRUE;
 }
 
-PVOID LoadFromHandle(FILE *fp, DWORD size){
+extern const char *fileName;
+extern const char *fileDirectory;
 
-	PVOID buffer = malloc(size);
-	if(!buffer){
-		MessageBoxA(NULL, "Was unable to create buffer", "Closing", 0);
-		return NULL;
-	}
-
-	if(!fread(buffer, size, 1, fp)){
-		MessageBoxA(NULL, "Was unable to read file from handle", "Closing", 0);
-		free(buffer);
-		return NULL;
-	}
-
-	return buffer;
-
+BOOL OpenFileFromDisk(){
+	printf("LMAO %s %s\n", fileDirectory, fileName);
+	return TRUE;
 
 }

@@ -9,7 +9,6 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 
 	if(fdwReason == DLL_PROCESS_ATTACH){
 
-		MessageBoxA(NULL, "LMAO", "LMAO", 0);
 		//Console is now allocated only with -console directive
 		AllocConsole();
 		if(!freopen("CONOUT$", "w", stdout)){

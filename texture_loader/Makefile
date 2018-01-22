@@ -3,7 +3,7 @@ AC= nasm
 LIBS = 
 OBJ = loader.o memory.o patches.o
 AOBJ = crchook.obj
-CFLAGS = -std=gnu11 -g
+CFLAGS = -std=gnu11 -g -Wall
 all: texture 
 
 %.o: %.c
