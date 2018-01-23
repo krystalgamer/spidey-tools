@@ -1,4 +1,4 @@
-extern _OpenFileFromDisk, _fileName, _fileDirectory, _buffer
+extern _OpenFileFromDisk, _fileName, _fileDirectory, _buffer, _fileSize, _curPkr
 
 section .text
 
@@ -14,4 +14,6 @@ mov eax, [esp+0xA8]
 mov [_fileDirectory], eax
 lea eax, [esp+0x94]
 mov [_buffer], eax
+lea eax, [esp+0x5C]
+mov [_curPkr], eax
 jmp _OpenFileFromDisk

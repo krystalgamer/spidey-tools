@@ -78,7 +78,7 @@ BOOL HookFunc(DWORD callAdd, DWORD funcAdd, const unsigned char *reason){
 	}
 
 	if(reason)
-		printf("Hook: %08X -  %s", callAdd, reason);
+		printf("Hook: %08X -  %s\n", callAdd, reason);
 	
 	return TRUE;
 }
