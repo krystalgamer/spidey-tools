@@ -2,8 +2,8 @@ CC= gcc
 AC= nasm
 LIBS = 
 OBJ = loader.o memory.o patches.o
-AOBJ = crchook.obj
-CFLAGS = -std=gnu11 -g -Wall
+AOBJ = hooks.obj
+CFLAGS = -std=gnu11 -g
 all: texture 
 
 %.o: %.c
