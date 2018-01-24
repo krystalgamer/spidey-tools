@@ -23,9 +23,9 @@ BOOL DisableIntros(){
 }
 
 /************************************************
- *						*
- * 		FILE LOADER 			*
- * 				 		*
+            
+					FILE LOADER
+            
  ************************************************/
 
 typedef struct {
@@ -44,7 +44,6 @@ BOOL FileLoader(){
 	Hook(0x005193C5, (DWORD)FreadHook, "FreadWrapper patch")
 
 	Nop(0x005193DC, 5, "Disable free after fread fail")
-	//Nop(0x00519407, 5, "Disable the decompression routine")
 	Nop(0x0051941E, 5, "Disable CRC Check")
 	Set(0x0051942D, 1, &twoByteJmp, "Disable jnz after CRC Check")
 
@@ -78,7 +77,7 @@ BOOL OpenFileFromDisk(PVOID unused, DWORD compressedSize, DWORD unused1, FILE *p
 	FILE *fp = fopen(path, "rb");
 	if(!fp){
 
-		printf("Will open from the pkr %s %d\n", fileName, compressedSize);
+		printf("Will open from the pkr: %s\n", fileName);
 		*buffer = new(compressedSize);
 		if(!(*buffer)){
 			printf("Wasn't able to create a buffer for the file being read off the PKR\n");
@@ -112,7 +111,7 @@ BOOL OpenFileFromDisk(PVOID unused, DWORD compressedSize, DWORD unused1, FILE *p
 	}
 	fclose(fp);
 
-	printf("File has been loaded: %s %p\n", curPkr->name, *buffer);
+	printf("File has been loaded: %s\n", curPkr->name);
 	curPkr->uncompressedSize = fileSize;
 	curPkr->compressed = 0xFFFFFFFE;
 
