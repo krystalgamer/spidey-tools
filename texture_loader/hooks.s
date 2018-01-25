@@ -1,8 +1,11 @@
-extern _OpenFileFromDisk, _fileName, _fileDirectory, _buffer, _fileSize, _curPkr
+extern _OpenFileFromDisk, _fileName, _fileDirectory, _buffer, _fileSize, _curPkr, _psxId, _PVRIdHandler, _SearchKeyValue, _printf
+
+section .data
+texto db "OLA %d %d", 0
 
 section .text
 
-global _FreadHook
+global _FreadHook, _CreateTexturePVRInIdHook, _ConvertVQHook
 
 _FreadHook:
 ;filename is from the walk pkr part in PKR_ReadFile
@@ -17,3 +20,26 @@ mov [_buffer], eax
 lea eax, [esp+0x5C]
 mov [_curPkr], eax
 jmp _OpenFileFromDisk
+
+_CreateTexturePVRInIdHook:
+mov eax, [esp+0x1D4]
+mov [_psxId], eax
+jmp _PVRIdHandler
+
+%define ConvertVQToBmpAdd 0x005115D0
+_ConvertVQHook:
+mov dword eax, [_psxId]
+mov dword ecx, 0x11
+mul ecx
+mov dword edx, [eax * 4 + 0x6B2440]
+mov dword eax, [esp+0xC]
+xor eax, edx
+push eax
+call _SearchKeyValue
+add esp, 4
+test eax, eax
+jz noTexture
+ret
+noTexture:
+mov eax, ConvertVQToBmpAdd
+jmp eax 

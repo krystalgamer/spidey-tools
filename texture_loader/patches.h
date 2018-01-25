@@ -4,6 +4,6 @@
 
 BOOL DisableIntros();
 BOOL FileLoader();
-BOOL HookFunc();
+BOOL TextureLoader();
 
 #endif
