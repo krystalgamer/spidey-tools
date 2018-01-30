@@ -88,5 +88,5 @@ BOOL CheckBinkwVersion(){
 
 BOOL ApplyHooks(){
 
-	return (DisableIntros() && FileLoader() && TextureLoader());
+	return (DisableIntros() && FileLoader() && TextureLoader() && ModOptions());
 }

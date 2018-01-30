@@ -251,3 +251,19 @@ void *PVRIdHandler(DWORD id, DWORD width, DWORD height, DWORD type, DWORD textur
 
 	return CreateTexturePVRInId(id, width, height, type, textureBuffer, a6, a7, a8);
 }
+
+/************************************************
+            
+					OPTIONS
+
+************************************************/
+ 
+void addMenuEntryRedirect();
+const char *option = "Mod configuration";
+DWORD optionAdd = (DWORD)&option;
+
+BOOL ModOptions(){
+
+	Hook(0x0049716C, (DWORD)addMenuEntryRedirect, "Hooking the last addMenuEntry of options to add mine")
+	return TRUE;
+}

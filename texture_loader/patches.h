@@ -5,5 +5,6 @@
 BOOL DisableIntros();
 BOOL FileLoader();
 BOOL TextureLoader();
+BOOL ModOptions();
 
 #endif
