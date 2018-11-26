@@ -1,0 +1,80 @@
+Bad node sent to Trig_CreateObject
+Command 1
+Command 5
+Command 20
+	Creating POWERUP [Type=%i] %s
+Command 7
+Bad node type sent to Trig_CreateObject
+Command 0xCB
+	Creating SCRIPTONLYBADDY %s
+Command 0x12F
+	Creating MJ %s
+Command 0x130
+	Creating THUG %s
+Command 0x131
+Command 0x13B
+	Creating HOSTAGE %s
+Command 0x132
+	Creating POLICE %s
+Command 0x133
+	Creating RHINO %s
+Command 0x134
+	Creating DOCOCK %s
+Command 0x135
+	Creating SUPERDOCOCK %s
+Command 0x136
+	Creating SCORPION %s
+Command 0x137
+	Creating MYSTERIO %s
+Command 0x138
+	Creating HENCHMAN %s
+Command 0x139
+	Creating VENOM %s
+Command 0x13A
+	Creating CARNAGE %s
+Command 0x13C
+	Creating JONAH %s
+Command 0x13D
+	Creating LIZMAN %s
+Command 0x13E
+	Creating BADDYCHOPPER %s
+Command 0x13F
+	Creating BLACKCAT %s
+Command 0x140
+	Creating SWAT %s
+	Creating SEARCHLIGHT %s
+Command 323
+	Creating SNIPERTARGET %s
+Command 324
+	Creating SYMBIOTE %s
+Command 325
+	Creating TURRET %s
+Command 326
+	Creating LIZARD %s
+Command 327
+	Creating SPCLONE %s
+Command 328
+	Creating TORCH %s
+	Creating MANIPOB %s
+Command 402
+	Creating PLATFORM  %s
+Command 403
+	Creating LEVER  %s
+Command 404
+	Creating LASERFENCE  %s
+Command 405
+	Creating TRIPWIRE  %s
+Command 407
+	Creating SWITCH  %s
+Command 408
+	Creating LASERBEAM  %s
+Command 409
+	Creating ELECTROLINE  %s
+Command 411
+	Creating SIMBYDROPLET %s
+Command 412
+	Creating PUNCHOB %s
+	Creating L1A3BOMB  %s
+Bad object type in Trig_CreateObject
+	Creating MARINER %s
+NewObject not in baddy,env obj or powerup list

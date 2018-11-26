@@ -1,0 +1,477 @@
+** Executing Command-List: %8.8X, Node: %i **
+Command 2u
+SetCheatRestarts
+Too many strings in SetCheatRestarts
+	CheatRestart[%i] = %s
+Command 3u
+SendPulse
+SendPulse command requires the command list to be associated with a node.
+Bad node sent to Trig_GetLinksPointer
+Command 1
+Command 2
+Command 3
+Command 6
+Command 8
+Command 9
+Command 10
+Command 5
+Bad node sent to Trig_SendPulseToNode
+	Sending pulse to node %i
+Command 1
+Command 5
+Command 7
+Command 0x14
+Command 6
+Sent pulse to command point node before command point was created
+Pending command list overflow, increase MAXPENDING in trig.cpp
+Unrecognized node type in
+ Trig_GetLinksPointer
+Unrecognized node type in
+ Trig_GetLinksPointer
+Bad node sent to Trig_GetLinksPointer
+Command 1
+Command 2
+Command 3
+Command 6
+Command 8
+Command 9
+Command 10
+Command 5
+Unrecognized node type in
+ Trig_GetLinksPointer
+Unrecognized node type in
+ Trig_GetLinksPointer
+Bad node sent to Trig_SendPulseToNode
+	Sending pulse to node %i
+Command 1
+Command 5
+Command 7
+Command 0x14
+Command 6
+Sent pulse to command point node before command point was created
+Pending command list overflow, increase MAXPENDING in trig.cpp
+Missing Endif
+Command 4u
+Command 5u
+SendSuspend
+SendActivate
+SendSuspend or SendActivate require the command list to be associated with a node.
+Bad node sent to Trig_GetLinksPointer
+Command 1
+Command 2
+Command 3
+Command 6
+Command 8
+Command 9
+Command 10
+Command 5
+Unrecognized node type in
+ Trig_GetLinksPointer
+Unrecognized node type in
+ Trig_GetLinksPointer
+Command 0xAu
+SendSignal
+SendSignal command requires the command list to be associated with a node.
+Bad node sent to Trig_GetLinksPointer
+Command 1
+Command 2
+Command 3
+Command 6
+Command 8
+Command 9
+Command 10
+Command 5
+Unrecognized node type in
+ Trig_GetLinksPointer
+Unrecognized node type in
+ Trig_GetLinksPointer
+Node sending a signal is not linked
+ to anything
+Command 0xBu
+SendKill
+Command 0xCu
+SendKillLoudly
+Command 0xDu
+SendVisible
+Bad node sent to SendVisible
+Bad node sent to Trig_GetLinksPointer
+Command 1
+Command 2
+Command 3
+Command 6
+Command 8
+Command 9
+Command 10
+Command 5
+Unrecognized node type in
+ Trig_GetLinksPointer
+Unrecognized node type in
+ Trig_GetLinksPointer
+SendVisible to non-crate
+Command 0x66u
+WaterEffectOn
+Command 0x67u
+WaterEffectOff
+Command 0x68u
+Trigger file changes zYon plane!
+
+SetFoggingParams
+Command 0x69u
+PlaySound(%i)
+Command 0x6Au
+StopSound(%i)
+Command 0x6Eu
+ClearAllPSXs
+Command 0x73u
+Text (unimplemented)
+Command no longer supported
+Command 0x77u
+DebugText(%s)
+Command 0x79u
+CamFollowPath (unimplemented)
+CamFollowPath not currently supported
+Command 0x7Au
+ClearOtherRegion (unimplemented)
+Clear other region not done yet
+Command 0x7Eu
+SpoolIn(%s)
+
+Command 0x7Fu
+SpoolOut(%s)
+Command 0x80u
+SpoolEnv(%s)
+Command 0x81u
+SpoolLock
+Command 0x82u
+SetCamAngle
+Command 0x83u
+BackgroundOn
+Command 0x84u
+BackgroundOff
+Command 0x85u
+KillEverythingInBox (%f,%f,%f) - (%f,%f,%f)
+Command 0x86u
+SetInitialPulses
+SetInitialPulses command requires a command point
+Command 0x87u
+SetCamDistXZ
+Command 0x88u
+AllowXA
+Command 0x89u
+DisallowXA
+Command 0x8Au
+SeekXA
+Command 0x8Bu
+PlayXA(%i)
+Command 0x8Cu
+Command 0xB0u
+SetRestart = %s
+Restart point 
+	Set RestartNode = %i
+Command 0x8Du
+Command 0xC0u
+Command 0xD1u
+SetBaddyVisibilityInBox (%f,%f,%f) - (%f,%f,%f), %s, %s
+SetObjectVisibilityInBox (%f,%f,%f) - (%f,%f,%f), %s, %s
+SetVisibilityInBox (%f,%f,%f) - (%f,%f,%f), %s, %s
+Command 0x8Eu
+SetObjFile(%s)
+Command 0x8Fu
+SetCamDistY
+Command 0x90u
+SetCamOffsetX
+Command 0x91u
+SetCamOffsetY
+Command 0x92u
+SetCamOffsetZ
+Command 0x93u
+SetGameLevel
+Command 0x94u
+IfPulseCount command only valid for a command point
+Command 0x95u
+Endif without if
+Command 0x96u
+TimeAttackComplete
+Command 0x97u
+SetDualBufferSize (unimplemented)
+Command 0x98u
+KillBruce
+Command 0x99u
+SetCamColijSide
+Command 0x9Au
+SetCamColijBack
+Command 0x9Du
+SetReverbType
+Command 0x9Eu
+EndLevel
+Command 0x9Fu
+SpoolMidi(%s)
+Command 0xA0u
+SetCamMode
+Command 0xA2u
+ClearAllCodeModules
+Command 0xA3u
+IgnoreBruceInput(%u)
+Command 0xA4u
+SetCamColijAngleSide
+Command 0xA5u
+SetCamColijAngleBack
+Command 0xA6u
+SetOTPushback = %i
+Command 0xA7u
+SetCamZoom
+Command 0xA8u
+SetCamPitchDamp
+Command 0xA9u
+SetOTPushback2 = %i
+Command 0xAAu
+SetSuspendDistance(%i)
+Command 0xABu
+BackgroundCreate
+Command 0xACu
+SetCamYDamp
+Command 0xADu
+SetCamFocusEqualsTripod
+Command 0xAEu
+SetDropDamageOn
+Command 0xAFu
+SetDropDamageOff
+Command 0xB1u
+IgnoreBruceInputFreeze (unimplemented)
+Command 0xB4u
+SetSpideyCamValue
+Command 0xB5u
+LoadNewTrg(%s)
+Command 0xB6u
+SetSpideyRGB
+Command 0xB7u
+SetSpideyLookAroundCamValue
+Command 0xB8u
+SetSpideyShadowRGB
+Command 0xB9u
+Command 0xBAu
+SetCamFixedPos
+No camera for SETCAM...
+Bad node sent to Trig_GetLinksPointer
+Command 0u
+Command 1u
+Command 2u
+Command 5u
+Command 7u
+Command 8u
+Command 9u
+Command 4u
+Unrecognized node type in
+ Trig_GetLinksPointer
+Unrecognized node type in
+ Trig_GetLinksPointer
+SETCAMFIXEDPOS with no linked nodes
+Command 0xBBu
+SetCamAngleLock
+Command 0xBCu
+SetCamFixedFocus
+No camera for SETCAM...
+Bad node sent to Trig_GetLinksPointer
+Command 1
+Command 2
+Command 3
+Command 6
+Command 8
+Command 9
+Command 10
+Command 5
+Unrecognized node type in
+ Trig_GetLinksPointer
+Unrecognized node type in
+ Trig_GetLinksPointer
+SETCAMFIXEDPOS with no linked nodes
+Command 0xBDu
+SpoolCodeModule(%s)
+Command 0xBEu
+RunCinema (ignored)
+RunCinema(%i)
+Command 0xBFu
+SetVisibilityByName: %s, %u, %u, %s
+Command 0xC1u
+Command 0xC2u
+SendPushback = %i
+Bad checksum in SENDPUSHBACK command
+Command 0xC3u
+WideScreen = %i
+Command 0xC4u
+BuzzSpideySense(%i,%i)
+Command 0xC5u
+SetMotionAngleOffset(%i)
+Command 0xC6u
+TextMessage(%s)
+		OLD MESSAGE: %s
+
+		NEW MESSAGE: %s
+
+Command 0xC7u
+CutSceneScript
+Command 0xC8u
+SetFadeColor
+Command 0xCAu
+SetSkyColor
+Command 0xCBu
+SetChopperAngle
+Command 0xCCu
+ChopperFollowWayPoints
+Command 0xCDu
+ChopperContinue
+Command 0xCEu
+ChopperVelocity
+Command 0xCFu
+ChopperMinHeight
+Command 0xD0u
+TextBox
+Command 0xD2u
+ChopperSetFlag
+Command 0xD3u
+ChopperFireMissleAtWayPoint
+Command 0xD4u
+ChopperFireMachineGunAtWayPoint
+Command 0xD5u
+SetFightMusicTime
+Command 0xD6u
+NIghtSky (unimplemented)
+Command 0xD7u
+SetFightMusicFadeDown
+Command 0xD8u
+SetFightMusicFadeUp
+Command 0xD9u
+AllowCamLOSCheck(%i)
+Command 0xDAu
+ClearTextMessages
+Command 0xDBu
+ClearTextBoxes
+Command 0xDCu
+Command 0xDDu
+VenomEnterWaitState
+VenomExitWaitState
+Command 0xDEu
+CutSceneSkipAllow(%i)
+Command 0xDFu
+SetSpideyFootStepBank(%i)
+Command 0x12Cu
+AllowSpeedup (unimplemented)
+Command 0x12Du
+DisallowSpeedup (unimplemented)
+Command 0x12Eu
+EndLevelNode = %i
+Command 0x12Fu
+FadePalettesUp(%u,%u,%u)
+Command 0x130u
+FadePalettesDown
+Command 0x131u
+KillEverything
+Unknown command
+ 
+Cannot nest IfPulseCount
+Command 176
+Command 181
+Command 189
+Command 177
+Command 185
+Command 186
+Command 187
+Command 190
+Command 195
+Command 197
+Command 203
+Command 204
+Command 206
+Command 207
+Command 211
+Command 213
+Command 217
+Command 222
+Command 223
+Command 180
+Command 214
+Command 182
+Command 183
+Command 184
+Command 188
+Command 196
+Command 200
+Command 202
+Command 210
+Command 212
+Command 221
+Command 191
+Command 192
+Command 209
+Command 198
+Command 199
+Command 205
+Command 215
+Command 216
+Command 218
+Command 219
+Command 220
+Command 208
+Command 2
+Command 3
+Command 4
+Command 5
+Command 10
+Command 11
+Command 12
+Command 102
+Command 103
+Command 110
+Command 121
+Command 122
+Command 129
+Command 136
+Command 137
+Command 149
+Command 150
+Command 162
+Command 173
+Command 13
+Command 105
+Command 106
+Command 131
+Command 132
+Command 134
+Command 138
+Command 147
+Command 148
+Command 151
+Command 153
+Command 154
+Command 155
+Command 156
+Command 160
+Command 163
+Command 164
+Command 165
+Command 166
+Command 168
+Command 169
+Command 170
+Command 172
+Command 104
+Command 139
+Command 115
+Command 119
+Command 126
+Command 127
+Command 128
+Command 140
+Command 142
+Command 130
+Command 135
+Command 143
+Command 144
+Command 145
+Command 146
+Command 167
+Command 174
+Command 133
+Command 141
+Command 171
+Unknown command, need to update SkipCommand
