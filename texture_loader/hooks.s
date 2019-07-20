@@ -1,4 +1,4 @@
-extern _OpenFileFromDisk, _fileName, _fileDirectory, _buffer, _fileSize, _curPkr, _psxId, _PVRIdHandler, _SearchKeyValue, _printf, _option
+extern _OpenFileFromDisk, _fileName, _fileDirectory, _buffer, _curPkr, _psxId, _PVRIdHandler, _printf, _option, _get_texture
 
 section .data
 
@@ -29,15 +29,12 @@ jmp _PVRIdHandler
 
 %define ConvertVQToBmpAdd 0x005115D0
 _ConvertVQHook:
-mov dword eax, [_psxId]
-mov dword ecx, 0x11
-mul ecx
-mov dword edx, [eax * 4 + 0x6B2440]
-mov dword eax, [esp+0xC]
-xor eax, edx
+mov eax, [esp+0xCC]
+push dword [esp+8]
+push dword [esp+8]
 push eax
-call _SearchKeyValue
-add esp, 4
+call _get_texture
+add esp, 0xC
 test eax, eax
 jz noTexture
 ret
