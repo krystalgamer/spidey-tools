@@ -68,7 +68,7 @@ bool ExtractDir(PKRDir *curDir){
 	for(uint32_t curFile = 0; curFile<curDir->numFiles; curFile++){
 
 		if(!GetPkrFile(&extracted)){
-			printf("Error reading file..");
+			printf("Error reading file..\n");
 			return false;
 		}
 		
@@ -82,7 +82,7 @@ bool ExtractDir(PKRDir *curDir){
 					return false;
 				break;
 			default:
-				printf("Unknown compression type:%08X.. Quitting", extracted.compressed);
+				printf("Unknown compression type:%08X.. Quitting\n", extracted.compressed);
 				return false;
 		}
 			
@@ -144,7 +144,7 @@ bool GetFile(PKRFile *file){
 	}
 
 	if(fseek(fp, file->fileOffset, SEEK_SET)){
-		printf("Could not access file %s offset: %08X", file->name, file->fileOffset); 
+		printf("Could not access file %s offset: %08X\n", file->name, file->fileOffset); 
 		return false;
 	}
 	

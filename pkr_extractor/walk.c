@@ -50,7 +50,7 @@ bool LoadDirectories(PKRDir *pkrDirs){
 	dirsRead = fread(pkrDirs, sizeof(PKRDir), pkrDirHeader.numDirs, fp);
 
 	if(dirsRead != pkrDirHeader.numDirs){
-		printf("Could only read %d dirs.", dirsRead);
+		printf("Could only read %d dirs.\n", dirsRead);
 		return false;
 	}
 
