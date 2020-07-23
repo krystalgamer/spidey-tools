@@ -5,10 +5,10 @@ CFLAGS = -std=c11 -g -static
 all: pkr 
 
 %.o: %.c
-		$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
+		$(CC) -c -o $@ $< $(CFLAGS)
 
 pkr: $(OBJ)
-		gcc -o $@ $^ $(CFLAGS) $(LIBS)
+		$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 clean:
 		rm -rf *.o
