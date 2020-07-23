@@ -233,8 +233,8 @@ bool CalculateExtractedCrc(PKRFile *file){
 
 bool CheckAlreadyExtracted(PKRFile *file){
 	
-	//Create the file namw
-	buffer[strlen(buffer) + strlen(file->name)] = '\0';
+	//Create the file name
+	buffer[strlen(buffer) + 0x20] = '\0';
 	strncat(buffer, file->name, 0x20);
 	out = fopen(buffer, "rb");
 	
