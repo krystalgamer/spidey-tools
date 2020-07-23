@@ -192,6 +192,7 @@ bool WriteFileToDisk(PKRFile *file){
 	//CRC Check
 	if(!CalculateExtractedCrc(file)){
 		printf("Invalid CRC for %s\n", file->name);
+#if 0
 		fclose(out);
 		if(auxExtractBuf){
 			free(auxExtractBuf);
@@ -199,6 +200,7 @@ bool WriteFileToDisk(PKRFile *file){
 		}
 		return false;
 
+#endif
 	}
 
 	if(!(fwrite(curExtBuf, file->uncompressedSize, 1, out))){
