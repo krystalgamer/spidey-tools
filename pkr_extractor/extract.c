@@ -44,7 +44,7 @@ bool ExtractDir(PKRDir *curDir){
 	uint32_t pathLen = strlen("extracted\\") + strlen((char*)curDir);
 	buffer[pathLen] = '\0';
 
-	printf("Extracting %s\n", &curDir->name);
+	printf("Extracting %s\n", curDir->name);
 
 	if(mkdir(buffer) && errno != EEXIST){
 			if(errno != ENOENT){

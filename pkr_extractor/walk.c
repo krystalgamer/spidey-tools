@@ -55,7 +55,7 @@ bool LoadDirectories(PKRDir *pkrDirs){
 	}
 
 	for(int i = 0; i<dirsRead; i++)
-		printf("%s has %d files\n", &pkrDirs[i].name, pkrDirs[i].numFiles);
+		printf("%s has %d files\n", pkrDirs[i].name, pkrDirs[i].numFiles);
 
 	return true;
 }
@@ -67,7 +67,7 @@ bool LoadFiles(PKRFile *buffer, uint32_t numFiles){
 //Prints the name of all the files in a dir
 void ListDirFiles(PKRFile *files, uint32_t numFiles){
 	for(uint32_t i = 0; i<numFiles; i++)
-		printf("\t%s\n", &files[i]);
+		printf("\t%s\n", files[i].name);
 }
 
 bool SetupPkrDirs(PKRDir **pkrDirs){
@@ -108,7 +108,7 @@ void ExtractDirs(PKRDir *pkrDirs){
 
 	for(uint32_t curDir = 0; curDir<pkrDirHeader.numDirs; curDir++){
 
-		printf("Extracting %s\n", &pkrDirs[curDir]);
+		printf("Extracting %s\n", pkrDirs[curDir].name);
 
 		if(!ExtractDir(&pkrDirs[curDir])){
 			puts("An error occurred");
