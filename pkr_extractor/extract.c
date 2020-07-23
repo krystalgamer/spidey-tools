@@ -24,7 +24,7 @@ bool CalculateExtractedCrc(PKRFile *file);
 extern FILE *fp;
 static FILE *out = NULL;
 
-static uint8_t buffer[0xFF];
+static char buffer[0xFF];
 static uint8_t extractBuffer[EXTRACT_BUF_SIZE];
 
 static uint8_t *auxExtractBuf = NULL; //Used when extract buffer is not enough
