@@ -95,8 +95,10 @@ bool ExtractDir(PKRDir *curDir){
 
 bool ExtractUncompressed(PKRFile *file){
 
-	if(CheckAlreadyExtracted(file))
+	if(CheckAlreadyExtracted(file)){
+		printf("File already extracted %s\n", file->name);
 		return true;
+	}
 
 	if(!GetFile(file))
 		return false;
@@ -105,9 +107,11 @@ bool ExtractUncompressed(PKRFile *file){
 }
 
 bool ExtractCompressed(PKRFile *file){
-	
-	if(CheckAlreadyExtracted(file))
+
+	if(CheckAlreadyExtracted(file)){
+		printf("File already extracted %s\n", file->name);
 		return true;
+	}
 
 	if(!GetFile(file))
 		return false;
