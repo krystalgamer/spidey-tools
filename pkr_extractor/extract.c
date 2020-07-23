@@ -37,10 +37,20 @@ uint32_t GetPkrFile(PKRFile *file){
 bool ExtractDir(PKRDir *curDir){
 
 	//Set the path
-	strcpy(buffer, "extracted\\\0");
-	strncat(buffer, (char*)curDir, 0x20);
+	strcpy(buffer, "extracted/");
+	buffer[strlen(buffer) + 0x20] = '\0';
+	strncat(buffer, curDir->name, 0x20);
 
-	uint32_t pathLen = strlen("extracted\\") + strlen((char*)curDir);
+	//Replace backslash by forwardslash for POSIX
+	char* cursor = buffer;
+	while(*cursor != '\0'){
+		if(*cursor == '\\'){
+			*cursor = '/';
+		}
+		cursor++;
+	}
+
+	uint32_t pathLen = strlen("extracted/") + strlen((char*)curDir);
 	buffer[pathLen] = '\0';
 
 	printf("Extracting %s\n", &curDir->name);
