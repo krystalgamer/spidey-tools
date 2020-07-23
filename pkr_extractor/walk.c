@@ -1,7 +1,6 @@
 //Related to walking the PKR3 Files directories
 #include "pkr.h"
-#include <sys/stat.h>
-#include <sys/types.h>
+#include "mkdir.h"
 #include <errno.h>
 
 #include <zlib.h>

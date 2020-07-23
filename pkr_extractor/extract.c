@@ -1,6 +1,5 @@
 #include "pkr.h"
-#include <sys/stat.h>
-#include <sys/types.h>
+#include "mkdir.h"
 #include <errno.h>
 
 #include <zlib.h>
