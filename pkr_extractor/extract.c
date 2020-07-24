@@ -256,8 +256,8 @@ uint8_t *DecompressFile(PKRFile *file){
 		return false;
 	}
 
-	uint32_t finalSize = file->uncompressedSize;
-	if(uncompress(outBuffer, (uLongf*)&finalSize, curExtBuf, file->compressedSize) != Z_OK){
+	uLongf finalSize = (uLongf)file->uncompressedSize;
+	if(uncompress(outBuffer, &finalSize, curExtBuf, file->compressedSize) != Z_OK){
 		puts("Error uncompressing the file :(");
 		return false;
 	}
