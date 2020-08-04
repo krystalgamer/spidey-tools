@@ -1,0 +1,3 @@
+[submodule "spidey-scripts"]
+	path = spidey-scripts
+	url = https://github.com/krystalgamer/spidey-scripts.git
