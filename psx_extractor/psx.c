@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "psx.h"
 
-bool WriteBmpFile(uint8_t *buffer, uint32_t width, uint32_t height, uint32_t curTexture);
+bool WriteBmpFile(uint8_t *buffer, uint32_t width, uint32_t height, uint32_t curTexture, uint32_t palette);
 
 typedef struct{
 	uint8_t unk[0xC];//Includes the name
@@ -150,28 +150,52 @@ uint8_t *DecompressTexture(PSXPVR *pvr){
 		return NULL;
 	}
 
-	uint32_t curHeight = 0;
-	uint32_t curWidth = 0;
-	Color v31;
-	uint32_t v30;
+	// 2305 and 2306 are special in-sequence palettes
+	// (There's probably a bit that sets these, haven't looked at it)
+	
+	bool inSequence = (pvr->palette == 2305) || (pvr->palette == 2306);
+	
+	if (inSequence)
+	{
+		uint32_t counter = 0;
+		uint32_t goal = (pvr->width * pvr->height);
+		
+		do {
+			uint16_t valA = 0;
+			fread(&valA, 2, 1, fp);
+			
+			textureBuffer[counter] = valA;
+			
+			counter ++;
+		} while (counter < goal);
+	}
+	
+	// Scrambled / compressed
+	else
+	{
+		uint32_t curHeight = 0;
+		uint32_t curWidth = 0;
+		Color v31;
+		uint32_t v30;
 
-	do{
-		curWidth = 0;
-		if((pvr->width >> 1)){
-			do{
-				v30 = bruijn[v20 & curHeight]
-					| 2 * bruijn[v20 & curWidth] | ((~v20 & (curHeight | curWidth)) << v32);
-				v31 = GetV31(curTexture, v30);
-
-				textureBuffer[curHeight * pvr->width * 2 + curWidth * 2] = v31.value[0];
-				textureBuffer[curHeight * pvr->width * 2 + curWidth * 2 + 1] = v31.value[2];
-				textureBuffer[pvr->width + curHeight * pvr->width * 2 + curWidth * 2] = v31.value[1];
-				textureBuffer[pvr->width + curHeight * pvr->width * 2 + curWidth * 2 + 1] = v31.value[3];
-				curWidth++;
-			}while(curWidth < (pvr->width >> 1));
-		}
-		curHeight++;
-	}while(curHeight < (pvr->height >> 1));
+		do{
+			curWidth = 0;
+			if((pvr->width >> 1)){
+				do{
+					v30 = bruijn[v20 & curHeight]
+						| 2 * bruijn[v20 & curWidth] | ((~v20 & (curHeight | curWidth)) << v32);
+					v31 = GetV31(curTexture, v30);
+					
+					textureBuffer[curHeight * pvr->width * 2 + curWidth * 2] = v31.value[0];
+					textureBuffer[curHeight * pvr->width * 2 + curWidth * 2 + 1] = v31.value[2];
+					textureBuffer[pvr->width + curHeight * pvr->width * 2 + curWidth * 2] = v31.value[1];
+					textureBuffer[pvr->width + curHeight * pvr->width * 2 + curWidth * 2 + 1] = v31.value[3];
+					curWidth++;
+				}while(curWidth < (pvr->width >> 1));
+			}
+			curHeight++;
+		}while(curHeight < (pvr->height >> 1));
+	}
 	
 	return (uint8_t*)textureBuffer;	
 }
@@ -189,16 +213,17 @@ bool ExtractTexture(uint32_t curTexture){
 	if(!fread(&pvr, sizeof(pvr), 1, fp))
 		return false;
 	
-	if((pvr.palette & 0xFF00) != 0x300){
-		printf("Not implement yet %08X.\n", pvr.palette);
-		return false;
-	}
+	// Uncomment to skip "bad" textures
+	//~ if((pvr.palette & 0xFF00) != 0x300){
+		//~ printf("Not implement yet %08X.\n", pvr.palette);
+		//~ return false;
+	//~ }
 
 	uint8_t *decompressed = DecompressTexture(&pvr);		
 	if(!decompressed)
 		return false;
 
-	if(!WriteBmpFile(decompressed, pvr.width, pvr.height, (nameAsAdd ? textureOff + 0x1C : curTexture))){
+	if(!WriteBmpFile(decompressed, pvr.width, pvr.height, (nameAsAdd ? textureOff + 0x1C : curTexture), pvr.palette)){
 		free(decompressed);
 		return false;
 	}
