@@ -1,0 +1,11 @@
+Thanks for downloading this spidey-tools release!
+
+
+To install the custom texture loader:
+- Go to your Spider-Man installation
+- Rename binkw32.dll to binkw32_.dll
+- Copy the content of texture_loader/ into the directory
+
+
+
+Other tools are Command Line Utilities so run then from Command Prompt or Powershell and inspect their output to learn more!

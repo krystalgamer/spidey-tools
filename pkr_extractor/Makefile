@@ -1,14 +1,19 @@
-CC= gcc
+CC=i686-w64-mingw32-gcc
+STRIP=i686-w64-mingw32-strip
 LIBS = -lz
 OBJ = pkr.o walk.o extract.o
-CFLAGS = -std=c11 -g -static
-all: pkr 
+CFLAGS = -std=c11 -O2 -static
+
+all: strip 
+
+strip: pkr
+		$(STRIP) pkr.exe
 
 %.o: %.c
 		$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
 
 pkr: $(OBJ)
-		gcc -o $@ $^ $(CFLAGS) $(LIBS)
+		$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 clean:
-		rm -rf *.o
+		rm -rf $(OBJ) pkr.exe
