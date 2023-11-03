@@ -1,0 +1,7 @@
+{
+  "no_videos": true,
+  "texture_loader":  true,
+  "file_loader":  true,
+  "console": false,
+  "psx_graphics": true
+}

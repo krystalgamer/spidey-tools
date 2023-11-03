@@ -237,3 +237,24 @@ BOOL ModOptions(){
 	Hook(0x0049716C, (DWORD)addMenuEntryRedirect, "Hooking the last addMenuEntry of options to add mine")
 	return TRUE;
 }
+
+/************************************************
+            
+					LOW RES (aka PSX MODE)
+
+************************************************/
+BOOL LowRes() {
+	DWORD* low_graphics = (DWORD*)0x006B78F8;
+	*low_graphics = 1;
+
+	DWORD freadSkip = 0x005156F0;
+	Nop(freadSkip, 5, "Remove fread from Spidey.cfg of low_graphics");
+
+	DWORD freadFirst = 0x005156FF;
+	Nop(freadFirst, 6, "Remove low_graphics override after reading config");
+
+
+	DWORD setDisplay = 0x0050034A;
+	Nop(setDisplay, 6, "Remove low_graphics override in top of setDisplayOptions");
+	return TRUE;
+}
