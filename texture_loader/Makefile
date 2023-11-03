@@ -1,21 +1,28 @@
-CC= gcc
+CC=i686-w64-mingw32-gcc-win32
+STRIP=i686-w64-mingw32-strip
 AC= nasm
 LIBS = 
-OBJ = loader.o memory.o patches.o md5.o
+OBJ = loader.o memory.o patches.o md5.o cJSON.o
 AOBJ = hooks.obj
-CFLAGS = -static -std=gnu11 -g
-all: texture 
+CMINUS = -std=c11 -static
+CFLAGS = $(CMINUS) -Os
+
+all: strip 
+
+strip : texture
+	$(STRIP) texture.dll
+
+
+loader.o: loader.c
+		$(CC) -c -o $@ $< $(LIBS) $(CMINUS)
 
 %.o: %.c
 		$(CC) -c -o $@ $< $(LIBS) $(CFLAGS)
 
 texture: $(OBJ) $(AOBJ)
-		gcc -shared -o $@.dll $^ $(CFLAGS) $(LIBS)
+		$(CC) -shared -o $@.dll $^ $(CFLAGS) $(LIBS)
 
 %.obj: %.s
 		nasm $< -f win -o $@
 clean:
-		rm -rf *.o *.obj
-
-install:
-	mv texture.dll /e/Activision/Spider-Man/binkw32.dll
+		rm -rf $(OBJ) $(AOBJ) texture.dll

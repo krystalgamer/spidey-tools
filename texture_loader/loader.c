@@ -187,7 +187,7 @@ void ReadSettings(Settings* settings) {
 	cJSON* json = cJSON_ParseWithLength(input, fileSize);
 
 	if (json == NULL) {
-		char* error = cJSON_GetErrorPtr();
+		const char* error = cJSON_GetErrorPtr();
 		error = error == NULL ? "no error" : error;
 		MessageBoxA(NULL, error, "Invalid JSON", 0);
 		exit(420);
