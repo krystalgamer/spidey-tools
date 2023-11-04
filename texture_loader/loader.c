@@ -159,6 +159,37 @@ int GetJsonBool(cJSON* json, const char* bool_name, bool* output) {
 	return 0;
 }
 
+void AddSettingToJsonObject(cJSON *object, const char *name, bool setting){
+
+	if (setting) {
+		cJSON_AddTrueToObject(object, name);
+	}
+	else {
+		cJSON_AddFalseToObject(object, name);
+	}
+}
+
+void WriteSettingsToDisk(const Settings *settings) {
+
+	FILE* fp = fopen("sm2000.json", "w");
+
+	if (fp == NULL) {
+		return;
+	}
+
+	cJSON* json = cJSON_CreateObject();
+	AddSettingToJsonObject(json, "no_videos", settings->no_videos);
+	AddSettingToJsonObject(json, "psx_graphics", settings->psx_graphics);
+	AddSettingToJsonObject(json, "console", settings->console);
+	AddSettingToJsonObject(json, "texture_loader", settings->texture_loader);
+	AddSettingToJsonObject(json, "file_loader", settings->file_loader);
+
+	char *content = cJSON_Print(json);
+	fputs(content, fp);
+	fclose(fp);
+	cJSON_Delete(json);
+}
+
 void ReadSettings(Settings* settings) {
 
 	if (settings == NULL) {
@@ -170,7 +201,7 @@ void ReadSettings(Settings* settings) {
 	FILE *fp = fopen("sm2000.json", "rb");
 
 	if (fp == NULL) {
-		MessageBoxA(NULL, "DUMB", "lol", 0);
+		WriteSettingsToDisk(settings);
 		return;
 	}
 
@@ -178,12 +209,15 @@ void ReadSettings(Settings* settings) {
 	long fileSize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-	if (fileSize >= sizeof(input)) {
+
+	if (fileSize >= sizeof(input) || fileSize < 0) {
+		fclose(fp);
 		MessageBoxA(NULL, "Dumb Json", "Resize the json file to be appropriate", 0);
 		exit(69);
 	}
 
 	fread(input, fileSize, 1, fp);
+	fclose(fp);
 	cJSON* json = cJSON_ParseWithLength(input, fileSize);
 
 	if (json == NULL) {
@@ -198,4 +232,5 @@ void ReadSettings(Settings* settings) {
 	GetJsonBool(json, "console", &settings->console);
 	GetJsonBool(json, "texture_loader", &settings->texture_loader);
 	GetJsonBool(json, "file_loader", &settings->file_loader);
+	cJSON_Delete(json);
 }

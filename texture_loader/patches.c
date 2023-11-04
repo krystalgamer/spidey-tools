@@ -208,7 +208,7 @@ load_texture_fail:
 }
 
 void* get_texture(int id, int width, int height) {
-	if (id > 1024)
+	if (id >= 1024)
 		return NULL;
 
 	void* cur = textures[id];
