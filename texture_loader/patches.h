@@ -2,6 +2,7 @@
 #define PATCHES_H
 #include "memory.h"
 
+BOOL FrameCounter();
 BOOL LowRes();
 BOOL DisableIntros();
 BOOL FileLoader();

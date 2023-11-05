@@ -267,3 +267,15 @@ BOOL LowRes() {
 	Nop(setDisplay, 6, "Remove low_graphics override in top of setDisplayOptions");
 	return TRUE;
 }
+
+/************************************************
+            
+					FRAME COUNTER (aka PSX MODE)
+
+************************************************/
+
+BOOL FrameCounter() {
+	*(DWORD*)0x0060CFFC = 1;
+	puts("Enabling framecounter");
+	return TRUE;
+}

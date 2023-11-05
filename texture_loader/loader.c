@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "cJSON.h"
 
-#define CTL_VERSION "0.5.1"
+#define CTL_VERSION "0.6"
 
 BOOL ApplyHooks();
 BOOL CheckBinkwVersion();
@@ -16,7 +16,7 @@ typedef struct{
 	bool file_loader;
 	bool console;
 	bool psx_graphics;
-
+	bool frame_counter;
 } Settings;
 
 BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
@@ -29,6 +29,7 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 			.texture_loader = true,
 			.no_videos = false,
 			.psx_graphics = false,
+			.frame_counter = false,
 		};
 
 		ReadSettings(&settings);
@@ -132,6 +133,10 @@ BOOL ApplyHooks(const Settings *settings){
 		DO_OR_QUIT(TextureLoader());
 	}
 
+	if (settings->frame_counter) {
+		DO_OR_QUIT(FrameCounter());
+	}
+
 	return TRUE;
 }
 
@@ -183,6 +188,7 @@ void WriteSettingsToDisk(const Settings *settings) {
 	AddSettingToJsonObject(json, "console", settings->console);
 	AddSettingToJsonObject(json, "texture_loader", settings->texture_loader);
 	AddSettingToJsonObject(json, "file_loader", settings->file_loader);
+	AddSettingToJsonObject(json, "frame_counter", settings->frame_counter);
 
 	char *content = cJSON_Print(json);
 	fputs(content, fp);
@@ -232,5 +238,6 @@ void ReadSettings(Settings* settings) {
 	GetJsonBool(json, "console", &settings->console);
 	GetJsonBool(json, "texture_loader", &settings->texture_loader);
 	GetJsonBool(json, "file_loader", &settings->file_loader);
+	GetJsonBool(json, "frame_counter", &settings->frame_counter);
 	cJSON_Delete(json);
 }
