@@ -6,6 +6,7 @@
  */
 
 #include "patches.h"
+#include "stdint.h"
 
 #define Nop(add, size, reason) if(!NopMemory(add, size, reason)) return FALSE;
 #define Set(add, size, buffer, reason) if(!SetMemory(add, size, buffer, reason)) return FALSE;
@@ -251,7 +252,7 @@ BOOL LowRes() {
 	*low_graphics = 1;
 
 	DWORD dummyAddress = (DWORD)&dummyRead;
-	SetMemory(0x005156EC, 4, &dummyAddress, "Override address of read low_graphics");
+	SetMemory(0x005156EC, 4, (unsigned char *) & dummyAddress, "Override address of read low_graphics");
 
 	/*
 	* Removed this because it breaks config
@@ -277,5 +278,51 @@ BOOL LowRes() {
 BOOL FrameCounter() {
 	*(DWORD*)0x0060CFFC = 1;
 	puts("Enabling framecounter");
+	return TRUE;
+}
+
+
+
+/************************************************
+            
+					KELLOG's FRAME LIMITER
+
+************************************************/
+
+int* current_frame = (int*)0x006B4CA8;
+int* firstFrameUpdater = (int*)0x005FAE98;
+int* secondFrameUpdater = (int*)0x0060CFB0;
+
+typedef int (__fastcall *CBody_EveryFrame_t)(int a1);
+CBody_EveryFrame_t CBody_EveryFrame_orig = (CBody_EveryFrame_t)0x00460ED0;
+
+int __fastcall CBody_EveryFrame(int a1) {
+	
+
+	WORD val = *(WORD*)(a1 + 70);
+	if ((val & 4) == 0) {
+		DWORD v3 = *(DWORD*)(a1 + 124);
+		DWORD v4;
+		do {
+			v4 = *current_frame - v3 < 2;
+			*(DWORD *)(a1 + 128) = *current_frame - v3;
+		}
+		while(v4 && !(*firstFrameUpdater) && !(*secondFrameUpdater));
+
+	}
+
+	return CBody_EveryFrame_orig(a1);
+}
+
+BOOL FrameLimiter() {
+
+	DWORD cbodyAdd = (DWORD)&CBody_EveryFrame;
+
+	HookFunc(0x00460F99, cbodyAdd, "Hooking first call to CBody_EveryFrame in CBody_InterleaveAI");
+	HookFunc(0x00460FAE, cbodyAdd, "Hooking second call to CBody_EveryFrame in CBody_InterleaveAI");
+	HookFunc(0x00461111, cbodyAdd, "Hooking first call to CBody_EveryFrame in Ob_AI");
+	HookFunc(0x00461126, cbodyAdd, "Hooking second call to CBody_EveryFrame in Ob_AI");
+	HookFunc(0x004F6C19, cbodyAdd, "Hooking call to CBody_EveryFrame in CWeb_AI");
+
 	return TRUE;
 }
