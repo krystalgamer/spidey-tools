@@ -6,7 +6,7 @@
  */
 
 #include "patches.h"
-#include "stdint.h"
+#include <assert.h>
 
 #define Nop(add, size, reason) if(!NopMemory(add, size, reason)) return FALSE;
 #define Set(add, size, buffer, reason) if(!SetMemory(add, size, buffer, reason)) return FALSE;
@@ -289,15 +289,19 @@ BOOL FrameCounter() {
 
 ************************************************/
 
-int* current_frame = (int*)0x006B4CA8;
-int* firstFrameUpdater = (int*)0x005FAE98;
-int* secondFrameUpdater = (int*)0x0060CFB0;
+DWORD* current_frame = (DWORD*)0x006B4CA8;
+DWORD* firstFrameUpdater = (DWORD*)0x005FAE98;
+DWORD* secondFrameUpdater = (DWORD*)0x0060CFB0;
 
 typedef int (__fastcall *CBody_EveryFrame_t)(int a1);
 CBody_EveryFrame_t CBody_EveryFrame_orig = (CBody_EveryFrame_t)0x00460ED0;
 
 int __fastcall CBody_EveryFrame(int a1) {
 	
+
+	static_assert(sizeof(int) == 4, "int should be 4b");
+	static_assert(sizeof(DWORD) == 4, "DWORD should be 4b");
+	static_assert(sizeof(WORD) == 2, "WORD should be 2b");
 
 	WORD val = *(WORD*)(a1 + 70);
 	if ((val & 4) == 0) {
