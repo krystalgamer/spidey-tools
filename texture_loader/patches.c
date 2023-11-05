@@ -243,12 +243,21 @@ BOOL ModOptions(){
 					LOW RES (aka PSX MODE)
 
 ************************************************/
+
+static int dummyRead = 0;
 BOOL LowRes() {
+
 	DWORD* low_graphics = (DWORD*)0x006B78F8;
 	*low_graphics = 1;
 
+	DWORD dummyAddress = (DWORD)&dummyRead;
+	SetMemory(0x005156EC, 4, &dummyAddress, "Override address of read low_graphics");
+
+	/*
+	* Removed this because it breaks config
 	DWORD freadSkip = 0x005156F0;
 	Nop(freadSkip, 5, "Remove fread from Spidey.cfg of low_graphics");
+	*/
 
 	DWORD freadFirst = 0x005156FF;
 	Nop(freadFirst, 6, "Remove low_graphics override after reading config");

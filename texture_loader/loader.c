@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "cJSON.h"
 
-#define CTL_VERSION "0.5"
+#define CTL_VERSION "0.5.1"
 
 BOOL ApplyHooks();
 BOOL CheckBinkwVersion();

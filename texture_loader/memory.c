@@ -12,7 +12,7 @@ BOOL NopMemory(DWORD address, DWORD size, const char *reason){
 
 	//Make it writable so we can edit it
 	if(!VirtualProtect(cAddress, size, PAGE_EXECUTE_READWRITE, &oldProtect)){
-		printf("There was a problem removing the protection from the address %08X", address);
+		printf("There was a problem removing the protection from the address %p", address);
 		MessageBoxA(NULL, "Error", "Coudln't remove the protection from a memory location. Please check the console for more info.", 0);
 		return FALSE;
 	}
@@ -28,7 +28,7 @@ BOOL NopMemory(DWORD address, DWORD size, const char *reason){
 	}
 
 	if(reason)
-		printf("Successfully patched address:%08X Reason: %s\n", cAddress ,reason);
+		printf("Successfully patched address:%p Reason: %s\n", cAddress ,reason);
 
 	return TRUE;
 }
