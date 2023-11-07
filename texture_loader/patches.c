@@ -8,9 +8,9 @@
 #include "patches.h"
 #include <assert.h>
 
-#define Nop(add, size, reason) if(!NopMemory(add, size, reason)) return FALSE;
-#define Set(add, size, buffer, reason) if(!SetMemory(add, size, buffer, reason)) return FALSE;
-#define Hook(add, func, reason) if(!HookFunc(add, func, reason)) return FALSE;
+#define Nop(add, size, reason) (NopMemory(add, size, reason));
+#define Set(add, size, buffer, reason) (SetMemory(add, size, buffer, reason));
+#define Hook(add, func, reason) (HookFunc(add, func, reason));
 
 static const unsigned char twoByteJmp = 0xEB;
 BOOL FreadHook();
@@ -235,7 +235,7 @@ DWORD optionAdd = (DWORD)&option;
 
 BOOL ModOptions(){
 
-	Hook(0x0049716C, (DWORD)addMenuEntryRedirect, "Hooking the last addMenuEntry of options to add mine")
+	Hook(0x0049716C, (DWORD)addMenuEntryRedirect, "Hooking the last addMenuEntry of options to add mine");
 	return TRUE;
 }
 

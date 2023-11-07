@@ -304,5 +304,8 @@ void ChangeEntryPoint(void) {
 
 	*(DWORD*)(&jmpAndRet[1]) = (DWORD)&NewEntryPoint;
 
+	DWORD oldPerms;
+	MakeAddressRW((DWORD)OriginalEntryPoint, sizeof(jmpAndRet), &oldPerms, "Changing permissions to patch EP");
 	SetMemory((DWORD)OriginalEntryPoint, sizeof(jmpAndRet), jmpAndRet, "Change entry to must new one");
+	ChangeAddressPerms((DWORD)OriginalEntryPoint, sizeof(jmpAndRet), oldPerms, NULL, "Restoring permissions in EP");
 }
