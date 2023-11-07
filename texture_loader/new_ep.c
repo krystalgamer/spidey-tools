@@ -5,7 +5,7 @@
 #include "patches.h"
 #include "console.h"
 
-#define CTL_VERSION "0.7"
+#define CTL_VERSION "0.7.1"
 
 typedef int (*OriginalEntryPoint_t)(void);
 OriginalEntryPoint_t OriginalEntryPoint = (OriginalEntryPoint_t)0x0052B46F;
