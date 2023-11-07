@@ -10,7 +10,10 @@ BOOL CheckBinkwVersion();
 BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 
 	if(fdwReason == DLL_PROCESS_ATTACH){
-		AllocateConsole();
+		if (FALSE == CheckBinkwVersion()) {
+			return FALSE;
+		}
+
 		ChangeEntryPoint();
 		return TRUE;
 	}

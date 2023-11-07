@@ -27,8 +27,64 @@ void EnsureBinkw32IsLoaded(void) {
 	}
 }
 
+typedef int (*InstallSM2000Patches_t)(void);
+
+/*
+* Loads plugins external from this project
+*/
+static BOOL ApplyThirdPartyPatches(void) {
+
+	WIN32_FIND_DATA findData;
+	memset(&findData, 0, sizeof(findData));
+
+	HANDLE findHandle;
+	findHandle = FindFirstFileA("plugins\\*.dll", &findData);
+
+	if (findHandle == INVALID_HANDLE_VALUE) {
+		goto cleanup;
+	}
+
+	char thirdPartyPath[MAX_PATH];
+	memset(thirdPartyPath, 0, sizeof(thirdPartyPath));
+
+	do {
+		printf("Loading %s...", findData.cFileName);
+
+		snprintf(thirdPartyPath, sizeof(thirdPartyPath), "plugins\\%s", findData.cFileName);
+		HMODULE loadedLibary = LoadLibraryA(thirdPartyPath);
+
+		if (loadedLibary == NULL) {
+			puts("Loading failed");
+			continue;
+		}
+
+		InstallSM2000Patches_t currentInstaller = (InstallSM2000Patches_t)GetProcAddress(loadedLibary, "InstallSM2000Patches");
+
+		if (currentInstaller == NULL) {
+			currentInstaller = (InstallSM2000Patches_t)GetProcAddress(loadedLibary, "?InstallSM2000Patches@@YAHXZ");
+		}
+
+		if (currentInstaller == NULL) {
+			puts("Module missing InstallSM2000Patches unloading it");
+			FreeLibrary(loadedLibary);
+			continue;
+		}
+
+		puts("Success, will now run it!");
+		if (currentInstaller()) {
+			puts("It failed, unloading it");
+			FreeLibrary(loadedLibary);
+		}
+	}
+	while(FALSE != FindNextFileA(findHandle, &findData));
+
+	cleanup:
+	FindClose(findHandle);
+	return TRUE;
+}
+
 #define DO_OR_QUIT(x) { if(x == FALSE) return FALSE; }
-static BOOL ApplyPatches(const Settings *settings){
+static BOOL ApplyMyPatches(const Settings *settings){
 
 	if (settings == NULL) {
 		return FALSE;
@@ -65,6 +121,29 @@ static BOOL ApplyPatches(const Settings *settings){
 	if (settings->frame_limiter) {
 		DO_OR_QUIT(FrameLimiter());
 	}
+
+	return TRUE;
+}
+
+static BOOL ApplyPatches(const Settings* settings) {
+
+	DWORD textStart = 0x00401000;
+	DWORD textSize = 0x0053B000 - textStart;
+	DWORD textOldPerms;
+
+	DWORD iDataStart = 0x0053B000;
+    DWORD iDataSize = 0x0053B230 - iDataStart;
+	DWORD iDataOldPerms;
+
+
+	DO_OR_QUIT(MakeAddressRW(textStart, textSize, &textOldPerms, "Changing .text to be rw"));
+	DO_OR_QUIT(MakeAddressRW(iDataStart, iDataSize, &iDataOldPerms, "Changing .idata to be rw"));
+
+	DO_OR_QUIT(ApplyMyPatches(settings));
+	DO_OR_QUIT(ApplyThirdPartyPatches());
+
+	DO_OR_QUIT(ChangeAddressPerms(textStart, textSize, textOldPerms, NULL, "Restoring .text perms"));
+	DO_OR_QUIT(ChangeAddressPerms(iDataStart, iDataSize, iDataOldPerms, NULL, "Restoring .idata perms"));
 
 	return TRUE;
 }

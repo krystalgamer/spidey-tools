@@ -5,6 +5,27 @@
 
 #include "memory.h"
 
+BOOL ChangeAddressPerms(DWORD start, DWORD size, DWORD newPerms, DWORD *oldProtect, const char *reason) {
+
+	DWORD backupOldProtect;
+
+	return VirtualProtect(
+		(LPVOID)start,
+		size,
+		newPerms,
+		oldProtect == NULL ? &backupOldProtect : oldProtect);
+}
+
+BOOL MakeAddressRW(DWORD start, DWORD size, DWORD *oldProtect, const char *reason) {
+	return ChangeAddressPerms(
+		start,
+		size,
+		PAGE_READWRITE,
+		oldProtect,
+		reason);
+}
+
+
 BOOL NopMemory(DWORD address, DWORD size, const char *reason){
 
 	DWORD oldProtect;
