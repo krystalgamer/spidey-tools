@@ -27,6 +27,15 @@
     <ClCompile Include="patches.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="cJSON.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="new_ep.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="console.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="forwards.h">
@@ -41,5 +50,20 @@
     <ClInclude Include="patches.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cJSON.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="new_ep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="console.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="hooks.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sm2000.json" />
   </ItemGroup>
 </Project>

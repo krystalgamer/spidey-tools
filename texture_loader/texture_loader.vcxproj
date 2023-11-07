@@ -74,16 +74,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cJSON.c" />
+    <ClCompile Include="console.c" />
     <ClCompile Include="loader.c" />
     <ClCompile Include="md5.c" />
     <ClCompile Include="memory.c" />
+    <ClCompile Include="new_ep.c" />
     <ClCompile Include="patches.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cJSON.h" />
+    <ClInclude Include="console.h" />
     <ClInclude Include="forwards.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="memory.h" />
+    <ClInclude Include="new_ep.h" />
     <ClInclude Include="patches.h" />
   </ItemGroup>
   <ItemGroup>

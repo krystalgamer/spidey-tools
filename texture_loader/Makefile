@@ -2,7 +2,7 @@ CC=i686-w64-mingw32-gcc-win32
 STRIP=i686-w64-mingw32-strip
 AC= nasm
 LIBS = 
-OBJ = loader.o memory.o patches.o md5.o cJSON.o
+OBJ = loader.o memory.o patches.o md5.o cJSON.o console.o new_ep.o
 AOBJ = hooks.obj
 CMINUS = -std=c11 -static
 CFLAGS = $(CMINUS) -Os

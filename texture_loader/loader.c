@@ -1,62 +1,22 @@
 #include "md5.h"
-#include "patches.h"
 #include "forwards.h"
-#include <stdbool.h>
-#include "cJSON.h"
+#include "new_ep.h"
+#include "console.h"
+#include <stdio.h>
+#include <windows.h>
 
-#define CTL_VERSION "0.7"
-
-BOOL ApplyHooks();
 BOOL CheckBinkwVersion();
-void ReadSettings();
-
-typedef struct{
-	bool no_videos;
-	bool texture_loader;
-	bool file_loader;
-	bool console;
-	bool psx_graphics;
-	bool frame_counter;
-	bool frame_limiter;
-} Settings;
 
 BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 
 	if(fdwReason == DLL_PROCESS_ATTACH){
-
-		Settings settings = {
-			.console = true,
-			.file_loader = true,
-			.texture_loader = true,
-			.no_videos = false,
-			.psx_graphics = false,
-			.frame_counter = false,
-			.frame_limiter = false,
-		};
-
-		ReadSettings(&settings);
-
-		if (ApplyHooks(&settings) == FALSE) {
-			return FALSE;
-		}
-
-		printf("Custom texture loader v%s\n", CTL_VERSION);
-
-		if(!CheckBinkwVersion()){
-			puts("Wrong binkw32 version.. Please download the correct version");
-			return FALSE;
-		}
-
-		if (!GetModuleHandle("binkw32.dll")){
-			printf("Original binkw32 doesn't seem to be loaded...Quitting");
-			MessageBoxA(NULL, "Error", "Couldn't get an handle to the original binkw32", 0);
-			return FALSE;
-		}
-
+		AllocateConsole();
+		ChangeEntryPoint();
 		return TRUE;
 	}
-	else if(fdwReason == DLL_PROCESS_DETACH)
-		FreeConsole();
+	else if (fdwReason == DLL_PROCESS_DETACH) {
+		ReleaseConsole();
+	}
 
 	return TRUE;
 }
@@ -101,151 +61,4 @@ BOOL CheckBinkwVersion(){
 	}
 
 	return TRUE; 
-}
-
-
-#define DO_OR_QUIT(x) { if(x == FALSE) return FALSE; }
-BOOL ApplyHooks(const Settings *settings){
-
-	if (settings == NULL) {
-		return FALSE;
-	}
-
-	if (settings->console) {
-		AllocConsole();
-		if(!freopen("CONOUT$", "w", stdout)){
-			MessageBoxA(NULL, "Error", "Couldn't allocate console...Closing", 0);
-			return FALSE;
-		}
-	}
-
-	if (settings->psx_graphics) {
-		DO_OR_QUIT(LowRes());
-	}
-
-	if (settings->no_videos) {
-		DO_OR_QUIT(DisableIntros());
-	}
-
-	if (settings->file_loader) {
-		DO_OR_QUIT(FileLoader());
-	}
-
-	if (settings->texture_loader) {
-		DO_OR_QUIT(TextureLoader());
-	}
-
-	if (settings->frame_counter) {
-		DO_OR_QUIT(FrameCounter());
-	}
-
-	if (settings->frame_limiter) {
-		DO_OR_QUIT(FrameLimiter());
-	}
-
-	return TRUE;
-}
-
-int GetJsonBool(cJSON* json, const char* bool_name, bool* output) {
-	cJSON *object = cJSON_GetObjectItemCaseSensitive(json, bool_name);
-
-	if (object == NULL) {
-		return 0;
-	}
-
-	if (!cJSON_IsBool(object)) {
-		return 0;
-	}
-
-	if (cJSON_IsTrue(object)) {
-		*output = true;
-		return 1;
-	}
-
-	if (cJSON_IsFalse(object)) {
-		*output = false;
-		return 1;
-	}
-
-	return 0;
-}
-
-void AddSettingToJsonObject(cJSON *object, const char *name, bool setting){
-
-	if (setting) {
-		cJSON_AddTrueToObject(object, name);
-	}
-	else {
-		cJSON_AddFalseToObject(object, name);
-	}
-}
-
-void WriteSettingsToDisk(const Settings *settings) {
-
-	FILE* fp = fopen("sm2000.json", "w");
-
-	if (fp == NULL) {
-		return;
-	}
-
-	cJSON* json = cJSON_CreateObject();
-	AddSettingToJsonObject(json, "no_videos", settings->no_videos);
-	AddSettingToJsonObject(json, "psx_graphics", settings->psx_graphics);
-	AddSettingToJsonObject(json, "console", settings->console);
-	AddSettingToJsonObject(json, "texture_loader", settings->texture_loader);
-	AddSettingToJsonObject(json, "file_loader", settings->file_loader);
-	AddSettingToJsonObject(json, "frame_counter", settings->frame_counter);
-	AddSettingToJsonObject(json, "frame_limiter", settings->frame_limiter);
-
-	char *content = cJSON_Print(json);
-	fputs(content, fp);
-	fclose(fp);
-	cJSON_Delete(json);
-}
-
-void ReadSettings(Settings* settings) {
-
-	if (settings == NULL) {
-		return;
-	}
-
-	char input[256];
-	memset(input, 0, sizeof(input));
-	FILE *fp = fopen("sm2000.json", "rb");
-
-	if (fp == NULL) {
-		WriteSettingsToDisk(settings);
-		return;
-	}
-
-	fseek(fp, 0, SEEK_END);
-	long fileSize = ftell(fp);
-	fseek(fp, 0, SEEK_SET);
-
-
-	if (fileSize >= sizeof(input) || fileSize < 0) {
-		fclose(fp);
-		MessageBoxA(NULL, "Dumb Json", "Resize the json file to be appropriate", 0);
-		exit(69);
-	}
-
-	fread(input, fileSize, 1, fp);
-	fclose(fp);
-	cJSON* json = cJSON_ParseWithLength(input, fileSize);
-
-	if (json == NULL) {
-		const char* error = cJSON_GetErrorPtr();
-		error = error == NULL ? "no error" : error;
-		MessageBoxA(NULL, error, "Invalid JSON", 0);
-		exit(420);
-	}
-
-	GetJsonBool(json, "no_videos", &settings->no_videos);
-	GetJsonBool(json, "psx_graphics", &settings->psx_graphics);
-	GetJsonBool(json, "console", &settings->console);
-	GetJsonBool(json, "texture_loader", &settings->texture_loader);
-	GetJsonBool(json, "file_loader", &settings->file_loader);
-	GetJsonBool(json, "frame_counter", &settings->frame_counter);
-	GetJsonBool(json, "frame_limiter", &settings->frame_limiter);
-	cJSON_Delete(json);
 }
