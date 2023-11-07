@@ -135,15 +135,21 @@ static BOOL ApplyPatches(const Settings* settings) {
     DWORD iDataSize = 0x0053B230 - iDataStart;
 	DWORD iDataOldPerms;
 
+	DWORD rDataStart = 0x0053B230;
+	DWORD rDataSize = 0x00546000 - rDataStart;
+	DWORD rDataOldPerms;
+
 
 	DO_OR_QUIT(MakeAddressRW(textStart, textSize, &textOldPerms, "Changing .text to be rw"));
 	DO_OR_QUIT(MakeAddressRW(iDataStart, iDataSize, &iDataOldPerms, "Changing .idata to be rw"));
+	DO_OR_QUIT(MakeAddressRW(rDataStart, rDataSize, &rDataOldPerms, "Changing .rdata to be rw"));
 
 	DO_OR_QUIT(ApplyMyPatches(settings));
 	DO_OR_QUIT(ApplyThirdPartyPatches());
 
 	DO_OR_QUIT(ChangeAddressPerms(textStart, textSize, textOldPerms, NULL, "Restoring .text perms"));
 	DO_OR_QUIT(ChangeAddressPerms(iDataStart, iDataSize, iDataOldPerms, NULL, "Restoring .idata perms"));
+	DO_OR_QUIT(ChangeAddressPerms(rDataStart, rDataSize, rDataOldPerms, NULL, "Restoring .rdata perms"));
 
 	return TRUE;
 }
