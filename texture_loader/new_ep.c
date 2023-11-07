@@ -288,7 +288,11 @@ static int NewEntryPoint() {
 		0x55, 0x8B, 0xEC, 0x6A, 0xFF, 0x68
 	};
 
+	DWORD oldPerms;
+	MakeAddressRW((DWORD)OriginalEntryPoint, 1, &oldPerms, NULL);
 	SetMemory((DWORD)OriginalEntryPoint, sizeof(originalBytes), originalBytes, "Restoring entry point");
+	ChangeAddressPerms((DWORD)OriginalEntryPoint, 1, oldPerms, NULL, NULL);
+
 	return OriginalEntryPoint();
 }
 
