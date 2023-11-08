@@ -5,13 +5,14 @@
 #include "patches.h"
 #include "console.h"
 
-#define CTL_VERSION "0.7.1"
+#define CTL_VERSION "0.8"
 
 typedef int (*OriginalEntryPoint_t)(void);
 OriginalEntryPoint_t OriginalEntryPoint = (OriginalEntryPoint_t)0x0052B46F;
 
 typedef struct{
-	bool no_videos;
+	bool no_intros;
+	bool no_fmvs;
 	bool texture_loader;
 	bool file_loader;
 	bool console;
@@ -102,8 +103,12 @@ static BOOL ApplyMyPatches(const Settings *settings){
 		DO_OR_QUIT(LowRes());
 	}
 
-	if (settings->no_videos) {
+	if (settings->no_intros) {
 		DO_OR_QUIT(DisableIntros());
+	}
+
+	if (settings->no_fmvs) {
+		DO_OR_QUIT(DisableFmvs());
 	}
 
 	if (settings->file_loader) {
@@ -197,7 +202,8 @@ static void WriteSettingsToDisk(const Settings *settings) {
 	}
 
 	cJSON* json = cJSON_CreateObject();
-	AddSettingToJsonObject(json, "no_videos", settings->no_videos);
+	AddSettingToJsonObject(json, "no_intros", settings->no_intros);
+	AddSettingToJsonObject(json, "no_fmvs", settings->no_fmvs);
 	AddSettingToJsonObject(json, "psx_graphics", settings->psx_graphics);
 	AddSettingToJsonObject(json, "console", settings->console);
 	AddSettingToJsonObject(json, "texture_loader", settings->texture_loader);
@@ -248,7 +254,8 @@ static void ReadSettings(Settings* settings) {
 		exit(420);
 	}
 
-	GetJsonBool(json, "no_videos", &settings->no_videos);
+	GetJsonBool(json, "no_intros", &settings->no_intros);
+	GetJsonBool(json, "no_fmvs", &settings->no_fmvs);
 	GetJsonBool(json, "psx_graphics", &settings->psx_graphics);
 	GetJsonBool(json, "console", &settings->console);
 	GetJsonBool(json, "texture_loader", &settings->texture_loader);
@@ -268,7 +275,8 @@ static int NewEntryPoint() {
 		.console = true,
 		.file_loader = true,
 		.texture_loader = true,
-		.no_videos = false,
+		.no_intros = true,
+		.no_fmvs = false,
 		.psx_graphics = false,
 		.frame_counter = false,
 		.frame_limiter = false,

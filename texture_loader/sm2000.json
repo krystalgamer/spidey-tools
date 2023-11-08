@@ -1,9 +1,10 @@
 {
-  "no_videos": true,
-  "texture_loader":  true,
-  "file_loader":  true,
-  "console": false,
-  "psx_graphics": true,
-  "frame_counter": false,
-  "frame_limiter": false
+	"no_intros":	true,
+	"no_fmvs":	false,
+	"psx_graphics":	false,
+	"console":	true,
+	"texture_loader":	true,
+	"file_loader":	true,
+	"frame_counter":	false,
+	"frame_limiter":	false
 }

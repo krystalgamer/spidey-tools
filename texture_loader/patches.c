@@ -17,11 +17,75 @@ BOOL FreadHook();
 BOOL OpenFileFromDisk();
 DWORD MyGetFileSize(FILE *fp);
 
-BOOL DisableIntros(){
+/************************************************
+            
+					NO VIDEOS
+            
+ ************************************************/
 
-	Nop(0x004707BE, 0x004707C3 - 0x004707BE, "Disable wrapper for Bink functions.")
+static int videoPlayerPatched = 0;
+static int playFmvs = 1;
+static int playIntros = 1;
+
+typedef int (*VideoPlayer_t)(const char* fileName, int a2);
+static VideoPlayer_t VideoPlayer = (VideoPlayer_t)0x0050B160;
+
+static int MyVideoPlayer(const char* fileName, int a2) {
+
+	if (!playFmvs && fileName[0] == 'L') {
+		return 1;
+
+	}
+
+	if (!playIntros) {
+
+		if (!strcmp(fileName, "ATVILOGO.bik")) {
+			return 1;
+		}
+
+		if (!strcmp(fileName, "NEVERSOFT.bik")) {
+			return 1;
+		}
+
+		if (!strcmp(fileName, "TREYARCH.bik")) {
+			return 1;
+		}
+
+		if (!strcmp(fileName, "GRAYMATT.bik")) {
+			return 1;
+		}
+	}
+
+	return VideoPlayer(fileName, a2);
+}
+
+static BOOL PatchVideoPlayer(void) {
+
+	if (videoPlayerPatched) {
+		return TRUE;
+	}
+
+
+	HookFunc(0x004707BE, (DWORD)&MyVideoPlayer, "Patching video player with my own");
+
+	videoPlayerPatched = 1;
 	return TRUE;
 }
+
+BOOL DisableIntros(void){
+
+	playIntros = 0;
+	puts("Disabled intros");
+	return PatchVideoPlayer();
+}
+
+BOOL DisableFmvs(void){
+
+	playFmvs = 0;
+	puts("Disabled FMVs");
+	return PatchVideoPlayer();
+}
+
 
 /************************************************
             

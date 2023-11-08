@@ -6,6 +6,7 @@ BOOL FrameLimiter();
 BOOL FrameCounter();
 BOOL LowRes();
 BOOL DisableIntros();
+BOOL DisableFmvs();
 BOOL FileLoader();
 BOOL TextureLoader();
 BOOL ModOptions();
