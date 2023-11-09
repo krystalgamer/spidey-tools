@@ -2,7 +2,7 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ "master", "windows_pipelines" ]
+    branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
 
