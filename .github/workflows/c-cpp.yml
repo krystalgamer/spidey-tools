@@ -21,7 +21,7 @@ jobs:
         msbuild /p:Platform=x86 /p:Configuration=Release
     - name: Prepare output
       run: |
-        mdkir output
+        mkdir output
         cp texture_loader\Release\texture_loader output\binkw32.dll
         cp texture_loader\sm2000.json output\.
     - uses: actions/upload-artifact@v3
