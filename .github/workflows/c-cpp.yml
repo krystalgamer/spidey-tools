@@ -2,52 +2,22 @@ name: C/C++ CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "windows_pipelines" ]
   pull_request:
     branches: [ "master" ]
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: msys2 {0}
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install deps
-      run: sudo apt install gcc-mingw-w64-i686 nasm libz-mingw-w64-dev
-    - name: Build texture loader
-      working-directory: ./texture_loader
-      run: make
-    - name: Build pkr extractor
-      working-directory: ./pkr_extractor
-      run: make
-    - name: Build psx extractor
-      working-directory: ./psx_extractor
-      run: make
-    - name: Build save editor
-      working-directory: ./save_editor
-      run: make
-    - name: Build texture repacker
-      working-directory: ./texture_repacker
-      run: make
-    - name: Arrange files
-      run: |
-        mkdir output
-        cd output
-        cp ../INSTRUCTIONS.txt .
-        cp ../THANKS.txt .
-        mkdir texture_loader
-        cp ../texture_loader/texture.dll texture_loader/binkw32.dll
-        cp ../texture_loader/sm2000.json texture_loader/.
-        mkdir pkr_extractor
-        cp ../pkr_extractor/pkr.exe pkr_extractor/.
-        mkdir psx_extractor
-        cp ../psx_extractor/psx.exe psx_extractor/.
-        mkdir save_editor
-        cp ../save_editor/save.exe save_editor/.
-        mkdir texture_repacker
-        cp ../texture_repacker/texture.exe texture_repacker/.
-    - uses: actions/upload-artifact@v3
+    - uses: msys2/setup-msys2@v2
       with:
-        path: output
-
+	msystem: UCRT64
+	update: true
+	install: mingw-w64-i686-gcc
