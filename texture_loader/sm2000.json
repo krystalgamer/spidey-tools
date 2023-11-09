@@ -6,5 +6,6 @@
 	"texture_loader":	true,
 	"file_loader":	true,
 	"frame_counter":	false,
-	"frame_limiter":	false
+	"frame_limiter":	false,
+	"fix_bugs":	true
 }

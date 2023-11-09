@@ -10,5 +10,6 @@ BOOL DisableFmvs();
 BOOL FileLoader();
 BOOL TextureLoader();
 BOOL ModOptions();
+BOOL FixBugs();
 
 #endif

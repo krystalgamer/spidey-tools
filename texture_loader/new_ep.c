@@ -5,7 +5,7 @@
 #include "patches.h"
 #include "console.h"
 
-#define CTL_VERSION "0.8"
+#define CTL_VERSION "0.9"
 
 typedef int (*OriginalEntryPoint_t)(void);
 OriginalEntryPoint_t OriginalEntryPoint = (OriginalEntryPoint_t)0x0052B46F;
@@ -19,6 +19,7 @@ typedef struct{
 	bool psx_graphics;
 	bool frame_counter;
 	bool frame_limiter;
+	bool fix_bugs;
 } Settings;
 
 void EnsureBinkw32IsLoaded(void) {
@@ -127,6 +128,10 @@ static BOOL ApplyMyPatches(const Settings *settings){
 		DO_OR_QUIT(FrameLimiter());
 	}
 
+	if (settings->fix_bugs) {
+		DO_OR_QUIT(FixBugs());
+	}
+
 	return TRUE;
 }
 
@@ -210,6 +215,7 @@ static void WriteSettingsToDisk(const Settings *settings) {
 	AddSettingToJsonObject(json, "file_loader", settings->file_loader);
 	AddSettingToJsonObject(json, "frame_counter", settings->frame_counter);
 	AddSettingToJsonObject(json, "frame_limiter", settings->frame_limiter);
+	AddSettingToJsonObject(json, "fix_bugs", settings->fix_bugs);
 
 	char *content = cJSON_Print(json);
 	fputs(content, fp);
@@ -262,6 +268,7 @@ static void ReadSettings(Settings* settings) {
 	GetJsonBool(json, "file_loader", &settings->file_loader);
 	GetJsonBool(json, "frame_counter", &settings->frame_counter);
 	GetJsonBool(json, "frame_limiter", &settings->frame_limiter);
+	GetJsonBool(json, "fix_bugs", &settings->fix_bugs);
 	cJSON_Delete(json);
 }
 
@@ -280,6 +287,7 @@ static int NewEntryPoint() {
 		.psx_graphics = false,
 		.frame_counter = false,
 		.frame_limiter = false,
+		.fix_bugs = true,
 	};
 
 	ReadSettings(&settings);

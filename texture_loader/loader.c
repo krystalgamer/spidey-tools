@@ -11,7 +11,9 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 
 	if(fdwReason == DLL_PROCESS_ATTACH){
 
+#if DEBUG
 		AllocateConsole();
+#endif
 
 		if (FALSE == CheckBinkwVersion()) {
 			return FALSE;

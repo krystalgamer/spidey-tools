@@ -394,3 +394,14 @@ BOOL FrameLimiter() {
 
 	return TRUE;
 }
+
+/************************************************
+            
+					FIX BUGS
+            
+ ************************************************/
+
+BOOL FixBugs() {
+	Nop(0x0042D49B, 8, "Fix CCop::GetYankedBySpidey null dereference that assumes CBaddy::StruckGameObject was called");
+	return TRUE;
+}
