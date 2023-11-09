@@ -1,5 +1,5 @@
-CC=i686-w64-mingw32-gcc
-STRIP=i686-w64-mingw32-strip
+CC=i686-w64-mingw32-gcc.exe
+STRIP=i686-w64-mingw32-strip.exe
 LIBS = -lz
 OBJ = pkr.o walk.o extract.o
 CFLAGS = -std=c11 -O2 -static
