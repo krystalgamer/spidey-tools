@@ -14,7 +14,7 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    - used: ilammy/setup-nasm@v1.4.0
+    - uses: ilammy/setup-nasm@v1.4.0
     - uses: microsoft/setup-msbuild@v1.1
     - uses: actions/checkout@v3
     - name: Build texture loader
