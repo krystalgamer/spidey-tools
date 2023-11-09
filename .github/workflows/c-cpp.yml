@@ -7,12 +7,9 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build-texture_loader:
 
     runs-on: windows-2022
-    defaults:
-      run:
-        shell: msys2 {0}
     steps:
     - uses: ilammy/setup-nasm@v1.4.0
     - uses: microsoft/setup-msbuild@v1.1
@@ -22,16 +19,12 @@ jobs:
       run: |
         nasm hooks.s -f win -o hooks.obj
         msbuild /p:Platform=x86 /p:Configuration=Release
-      shell: cmd
-    - uses: msys2/setup-msys2@v2
-      with:
-        msystem: MINGW32
-        update: true
-        cache: true
-        install: mingw-w64-i686-gcc mingw-w64-i686-make
-    - name: Build pkr_extractor
-      working-directory: ./pkr_extractor
-      run: mingw32-make
+    - name: Prepare output
+      run: |
+        mdkir output
+        cp texture_loader\Release\texture_loader output\binkw32.dll
+        cp texture_loader\sm2000.json output\.
     - uses: actions/upload-artifact@v3
       with:
-        path: texture_loader
+        path: output
+        name: texture_loader
