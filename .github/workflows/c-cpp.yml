@@ -24,3 +24,6 @@ jobs:
     - name: Build pkr_extractor
       working-directory: ./pkr_extractor
       run: mingw32-make
+    - uses: actions/upload-artifact@v3
+      with:
+        path: pkr_extractor
