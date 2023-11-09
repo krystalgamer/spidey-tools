@@ -7,7 +7,7 @@ CFLAGS = -std=c11 -O2 -static
 all: strip 
 
 strip: pkr
-		$(STRIP) pkr
+		$(STRIP) pkr.exe
 
 %.o: %.c
 		$(CC) -c -o $@ $< $(CFLAGS) $(LIBS)
