@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: ilammy/setup-nasm@v1.4.0
     - uses: microsoft/setup-msbuild@v1.1
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Build texture loader
       working-directory: ./texture_loader
       run: |
@@ -22,7 +22,7 @@ jobs:
     - name: Prepare output
       run: |
         mkdir output
-        cp texture_loader\Release\texture_loader output\binkw32.dll
+        cp texture_loader\Release\texture_loader.dll output\binkw32.dll
         cp texture_loader\sm2000.json output\.
     - uses: actions/upload-artifact@v3
       with:
