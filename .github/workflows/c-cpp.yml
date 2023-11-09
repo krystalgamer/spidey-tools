@@ -14,11 +14,12 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    - uses: actions/checkout@v3
     - uses: microsoft/setup-msbuild@v1.1
+    - uses: actions/checkout@v3
     - name: Build texture loader
       working-directory: ./texture_loader
       run: msbuild /p:Platform=x86 /p:Configuration=Release
+      shell: cmd
     - uses: msys2/setup-msys2@v2
       with:
         msystem: MINGW32
