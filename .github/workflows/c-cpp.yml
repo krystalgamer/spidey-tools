@@ -19,4 +19,7 @@ jobs:
       with:
         msystem: UCRT64
         update: true
-        install: mingw-w64-i686-gcc
+        install: mingw-w64-i686-gcc make
+    - name: Build pkr_extractor
+      working-directory: ./pkr_extractor
+      run: make
