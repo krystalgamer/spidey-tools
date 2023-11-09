@@ -23,4 +23,4 @@ jobs:
         install: mingw-w64-i686-gcc mingw-w64-i686-make
     - name: Build pkr_extractor
       working-directory: ./pkr_extractor
-      run: make
+      run: mingw32-make
