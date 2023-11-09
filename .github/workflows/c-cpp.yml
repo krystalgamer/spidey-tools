@@ -7,17 +7,36 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build-texture_loader:
+
+    runs-on: windows-2022
+    steps:
+    - uses: ilammy/setup-nasm@v1.4.0
+    - uses: microsoft/setup-msbuild@v1.1
+    - uses: actions/checkout@v4
+    - name: Build texture loader
+      working-directory: ./texture_loader
+      run: |
+        nasm hooks.s -f win -o hooks.obj
+        msbuild /p:Platform=x86 /p:Configuration=Release
+    - name: Prepare output
+      run: |
+        mkdir output
+        cp texture_loader\Release\texture_loader.dll output\binkw32.dll
+        cp texture_loader\sm2000.json output\.
+    - uses: actions/upload-artifact@v3
+      with:
+        path: output
+        name: texture_loader
+
+  build-rest-of-tools:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install deps
-      run: sudo apt install gcc-mingw-w64-i686 nasm libz-mingw-w64-dev
-    - name: Build texture loader
-      working-directory: ./texture_loader
-      run: make
+      run: sudo apt install gcc-mingw-w64-i686 libz-mingw-w64-dev
     - name: Build pkr extractor
       working-directory: ./pkr_extractor
       run: make
@@ -36,9 +55,6 @@ jobs:
         cd output
         cp ../INSTRUCTIONS.txt .
         cp ../THANKS.txt .
-        mkdir texture_loader
-        cp ../texture_loader/texture.dll texture_loader/binkw32.dll
-        cp ../texture_loader/sm2000.json texture_loader/.
         mkdir pkr_extractor
         cp ../pkr_extractor/pkr.exe pkr_extractor/.
         mkdir psx_extractor
@@ -50,4 +66,3 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         path: output
-
