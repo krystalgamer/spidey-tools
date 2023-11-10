@@ -142,6 +142,10 @@ static BOOL ApplyMyPatches(const Settings *settings){
 		DO_OR_QUIT(UnlockEverything());
 	}
 
+#ifdef _DEBUG
+	TestingGround();
+#endif
+
 	return TRUE;
 }
 

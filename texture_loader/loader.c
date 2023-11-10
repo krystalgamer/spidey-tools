@@ -17,7 +17,7 @@ BOOL WINAPI DllMain(HINSTANCE hInstDll, DWORD fdwReason, LPVOID reserverd){
 
 	if(fdwReason == DLL_PROCESS_ATTACH){
 
-#if DEBUG
+#ifdef _DEBUG
 		AllocateConsole();
 #endif
 

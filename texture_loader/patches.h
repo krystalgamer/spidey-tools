@@ -12,5 +12,6 @@ BOOL TextureLoader();
 BOOL ModOptions();
 BOOL FixBugs();
 BOOL UnlockEverything();
+BOOL TestingGround();
 
 #endif

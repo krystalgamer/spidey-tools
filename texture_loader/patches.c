@@ -425,3 +425,44 @@ BOOL UnlockEverything() {
 	DebugPuts("Unlocking everything");
 	return ActivateCheat(1) == 1;
 }
+
+
+/************************************************
+            
+              Testing ground
+
+************************************************/
+
+
+__declspec(naked) void MyPrinterDetour() {
+	__asm {
+		mov eax, [esp]
+		cmp eax, 0x004E0210
+		jl LeavePrinter
+		cmp eax, 0x004E2BAE
+		jg LeavePrinter
+		mov eax, [esp+4]
+		cmp eax, 0x0053B000
+		jl LeavePrinter
+		cmp eax, 0x002E0C000
+		jg LeavePrinter
+		jmp DebugPrintfWithNewLine
+
+		LeavePrinter:
+		ret
+	}
+}
+
+BOOL TestingGround() {
+	DebugPuts("TESTING GROUND");
+
+	unsigned char jmpAndRet[6] = {
+		0x68, 0x00, 0x00, 0x00, 0x00,
+		0xc3
+	};
+
+	*(DWORD*)&jmpAndRet[1] = (DWORD)&MyPrinterDetour;
+	SetMemory(0x004015B0, sizeof(jmpAndRet), jmpAndRet, "Replacing printf_if_false with mine to print ExecuteCommandList calls");
+
+	return TRUE;
+}
