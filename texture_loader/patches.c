@@ -364,6 +364,8 @@ DWORD* secondFrameUpdater = (DWORD*)0x0060CFB0;
 typedef int (__fastcall *CBody_EveryFrame_t)(int a1);
 CBody_EveryFrame_t CBody_EveryFrame_orig = (CBody_EveryFrame_t)0x00460ED0;
 
+static const DWORD FPS_DIVIDER = 2;
+
 int __fastcall CBody_EveryFrame(int a1) {
 	
 
@@ -376,7 +378,7 @@ int __fastcall CBody_EveryFrame(int a1) {
 		DWORD v3 = *(DWORD*)(a1 + 124);
 		DWORD v4;
 		do {
-			v4 = *current_frame - v3 < 2;
+			v4 = *current_frame - v3 < FPS_DIVIDER;
 			*(DWORD *)(a1 + 128) = *current_frame - v3;
 		}
 		while(v4 && !(*firstFrameUpdater) && !(*secondFrameUpdater));
@@ -408,4 +410,18 @@ BOOL FrameLimiter() {
 BOOL FixBugs() {
 	Nop(0x0042D49B, 8, "Fix CCop::GetYankedBySpidey null dereference that assumes CBaddy::StruckGameObject was called");
 	return TRUE;
+}
+
+/************************************************
+            
+              Unlock everything
+
+************************************************/
+
+typedef int (*ActivateCheat_t)(int cheatIndex);
+ActivateCheat_t ActivateCheat = (ActivateCheat_t)0x0047C240;
+
+BOOL UnlockEverything() {
+	DebugPuts("Unlocking everything");
+	return ActivateCheat(1) == 1;
 }

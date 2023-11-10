@@ -10,7 +10,7 @@
 
 #include "log.h"
 
-#define CTL_VERSION "0.9.1"
+#define CTL_VERSION "0.9.2"
 
 typedef int (*OriginalEntryPoint_t)(void);
 OriginalEntryPoint_t OriginalEntryPoint = (OriginalEntryPoint_t)0x0052B46F;
@@ -25,6 +25,7 @@ typedef struct{
 	bool frame_counter;
 	bool frame_limiter;
 	bool fix_bugs;
+	bool unlock_everything;
 } Settings;
 
 void EnsureBinkw32IsLoaded(void) {
@@ -137,6 +138,10 @@ static BOOL ApplyMyPatches(const Settings *settings){
 		DO_OR_QUIT(FixBugs());
 	}
 
+	if (settings->unlock_everything) {
+		DO_OR_QUIT(UnlockEverything());
+	}
+
 	return TRUE;
 }
 
@@ -221,6 +226,7 @@ static void WriteSettingsToDisk(const Settings *settings) {
 	AddSettingToJsonObject(json, "frame_counter", settings->frame_counter);
 	AddSettingToJsonObject(json, "frame_limiter", settings->frame_limiter);
 	AddSettingToJsonObject(json, "fix_bugs", settings->fix_bugs);
+	AddSettingToJsonObject(json, "unlock_everything", settings->unlock_everything);
 
 	char *content = cJSON_Print(json);
 	fputs(content, fp);
@@ -274,6 +280,7 @@ static void ReadSettings(Settings* settings) {
 	GetJsonBool(json, "frame_counter", &settings->frame_counter);
 	GetJsonBool(json, "frame_limiter", &settings->frame_limiter);
 	GetJsonBool(json, "fix_bugs", &settings->fix_bugs);
+	GetJsonBool(json, "unlock_everything", &settings->unlock_everything);
 	cJSON_Delete(json);
 }
 
@@ -293,6 +300,7 @@ static int NewEntryPoint() {
 		.frame_counter = false,
 		.frame_limiter = false,
 		.fix_bugs = true,
+		.unlock_everything = false,
 	};
 
 	ReadSettings(&settings);

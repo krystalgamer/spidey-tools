@@ -11,5 +11,6 @@ BOOL FileLoader();
 BOOL TextureLoader();
 BOOL ModOptions();
 BOOL FixBugs();
+BOOL UnlockEverything();
 
 #endif

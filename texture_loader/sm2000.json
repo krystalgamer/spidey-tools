@@ -7,5 +7,6 @@
 	"file_loader":	true,
 	"frame_counter":	false,
 	"frame_limiter":	false,
-	"fix_bugs":	true
+	"fix_bugs":	true,
+	"unlock_everything":	false
 }
