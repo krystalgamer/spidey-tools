@@ -1,9 +1,15 @@
+#define _CRT_SECURE_NO_WARNINGS
+#define WIN32_LEAN_AND_MEAN
+
 #include "md5.h"
 #include "forwards.h"
 #include "new_ep.h"
 #include "console.h"
 #include <stdio.h>
+
 #include <windows.h>
+
+#include "log.h"
 
 BOOL CheckBinkwVersion();
 
@@ -42,7 +48,7 @@ BOOL CheckBinkwVersion(){
 	fp = fopen("binkw32_.dll", "rb");
 	if(!fp){
 		MessageBoxA(NULL, "Error", "Couldn't open binkw32_.dll.. Quitting", 0);
-		puts("Couldn't open binkw32_.dll.. Quitting");
+		DebugPuts("Couldn't open binkw32_.dll.. Quitting");
 		return FALSE;
 	}
 
@@ -55,7 +61,7 @@ BOOL CheckBinkwVersion(){
 
 	if(!feof(fp)){
 		MessageBoxA(NULL, "Error", "There was an error reading the file", 0);
-		puts("There was an error reading the file");
+		DebugPuts("There was an error reading the file");
 		return FALSE;
 	}
 	fclose(fp);
@@ -64,7 +70,7 @@ BOOL CheckBinkwVersion(){
 	MD5_Final((void*)&checksum, &ctx);
 	if(memcmp(checksum, binkwChecksum, 16)){
 		MessageBoxA(NULL, "Error", "Wrong binkw version or corrupted!", 0);
-		puts("Wrong binkw version or corrupted!");
+		DebugPuts("Wrong binkw version or corrupted!");
 		return FALSE;
 	}
 

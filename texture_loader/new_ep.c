@@ -1,11 +1,16 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "new_ep.h"
 #include "memory.h"
 #include <stdbool.h>
 #include "cJSON.h"
 #include "patches.h"
 #include "console.h"
+#include <stdlib.h>
 
-#define CTL_VERSION "0.9"
+#include "log.h"
+
+#define CTL_VERSION "0.9.1"
 
 typedef int (*OriginalEntryPoint_t)(void);
 OriginalEntryPoint_t OriginalEntryPoint = (OriginalEntryPoint_t)0x0052B46F;
@@ -50,7 +55,7 @@ static BOOL ApplyThirdPartyPatches(void) {
 	memset(thirdPartyPath, 0, sizeof(thirdPartyPath));
 
 	do {
-		printf("Loading %s...", findData.cFileName);
+		DebugPrintf("Loading %s...", findData.cFileName);
 
 		snprintf(thirdPartyPath, sizeof(thirdPartyPath), "plugins\\%s", findData.cFileName);
 		HMODULE loadedLibary = LoadLibraryA(thirdPartyPath);
@@ -298,7 +303,7 @@ static int NewEntryPoint() {
 
 	EnsureBinkw32IsLoaded();
 
-	printf("Custom texture loader v%s\n", CTL_VERSION);
+	DebugPrintf("Custom texture loader v%s\n", CTL_VERSION);
 
 	unsigned char originalBytes[6] = {
 		0x55, 0x8B, 0xEC, 0x6A, 0xFF, 0x68

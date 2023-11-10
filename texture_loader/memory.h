@@ -2,6 +2,8 @@
 #define MEMORY_H
 
 #include <stdio.h>
+
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 BOOL ChangeAddressPerms(DWORD start, DWORD size, DWORD newPerms, DWORD *oldProtect, const char *reason);

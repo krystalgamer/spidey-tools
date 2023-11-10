@@ -5,8 +5,12 @@
  *
  */
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "patches.h"
 #include <assert.h>
+
+#include "log.h"
 
 #define Nop(add, size, reason) (NopMemory(add, size, reason));
 #define Set(add, size, buffer, reason) (SetMemory(add, size, buffer, reason));
@@ -142,16 +146,16 @@ BOOL OpenFileFromDisk(PVOID unused, DWORD compressedSize, DWORD unused1, FILE *p
 	FILE *fp = fopen(path, "rb");
 	if(!fp){
 
-		printf("Will open from the pkr: %s\n", fileName);
+		DebugPrintf("Will open from the pkr: %s\n", fileName);
 		*buffer = new(compressedSize);
 		if(!(*buffer)){
-			printf("Wasn't able to create a buffer for the file being read off the PKR\n");
+			DebugPrintf("Wasn't able to create a buffer for the file being read off the PKR\n");
 			return FALSE;
 		}
 
 		lockFile(pkr);
 		if(!freadSpidey(*buffer, compressedSize, 1, pkr)){
-			printf("Couldn't read file off pkr: %s\n", fileName);
+			DebugPrintf("Couldn't read file off pkr: %s\n", fileName);
 			delete(*buffer);
 			return FALSE;
 		}
@@ -163,20 +167,20 @@ BOOL OpenFileFromDisk(PVOID unused, DWORD compressedSize, DWORD unused1, FILE *p
 	DWORD fileSize = MyGetFileSize(fp);
 	*buffer = new(fileSize);
 	if(!(*buffer)){
-		printf("Couldn't allocate space file: %s\n", fileName);
+		DebugPrintf("Couldn't allocate space file: %s\n", fileName);
 		fclose(fp);
 		return FALSE;
 	}
 
 	if(!fread(*buffer, fileSize, 1, fp)){
-		printf("Error reading file: %s\n", fileName);
+		DebugPrintf("Error reading file: %s\n", fileName);
 		fclose(fp);
 		delete(*buffer);
 		return FALSE;
 	}
 	fclose(fp);
 
-	printf("File has been loaded: %s\n", curPkr->name);
+	DebugPrintf("File has been loaded: %s\n", curPkr->name);
 	curPkr->uncompressedSize = fileSize;
 	curPkr->compressed = 0xFFFFFFFE;
 
@@ -221,7 +225,7 @@ void *PVRIdHandler(DWORD id, DWORD width, DWORD height, DWORD type, DWORD textur
 
 	void* res = NULL;
 	static char path[64];
-	sprintf(path, "textures/%s/%08X.bmp\0", &UnkList[0x11 * psxId], textureBuffer - UnkList[0x11 * psxId + 6]);
+	sprintf(path, "textures/%s/%08X.bmp\0", (char*)((DWORD*)&UnkList[0x11 * psxId]), textureBuffer - UnkList[0x11 * psxId + 6]);
 
 	FILE *fp;
 	fp = fopen(path, "rb");
@@ -231,7 +235,7 @@ void *PVRIdHandler(DWORD id, DWORD width, DWORD height, DWORD type, DWORD textur
 	//Guarantees there's no problems with the files
 	DWORD textureSize = MyGetFileSize(fp);
 	if(textureSize < width * height * 2 + 0xA){
-		printf("There seems to be a problem with the texture %08X for %s\n", textureBuffer - UnkList[0x11 * psxId + 6], &UnkList[0x11 * psxId]);
+		DebugPrintf("There seems to be a problem with the texture %08X for %s\n", textureBuffer - UnkList[0x11 * psxId + 6], &UnkList[0x11 * psxId]);
 		fclose(fp);
 		goto load_texture_fail;
 	}
@@ -241,7 +245,7 @@ void *PVRIdHandler(DWORD id, DWORD width, DWORD height, DWORD type, DWORD textur
 	fseek(fp, 0xA, SEEK_SET);
 	if(!fread(&offset, 4, 1, fp)){
 		fclose(fp);
-		printf("Couldn't read offset %s\n", &UnkList[0x11 * psxId]);
+		DebugPrintf("Couldn't read offset %s\n", &UnkList[0x11 * psxId]);
 		goto load_texture_fail;
 	}
 
@@ -249,20 +253,20 @@ void *PVRIdHandler(DWORD id, DWORD width, DWORD height, DWORD type, DWORD textur
 	void *texBuffer = new(width * height * 2);	
 	if(!texBuffer){
 		fclose(fp);
-		printf("Couldn't allocate space for %s\n", &UnkList[0x11 * psxId]);
+		DebugPrintf("Couldn't allocate space for %s\n", &UnkList[0x11 * psxId]);
 		goto load_texture_fail;
 	}
 
 	if(!fread(texBuffer, width * height * 2, 1, fp)){
 		fclose(fp);
 		delete(texBuffer);
-		printf("Couldn't read offset %s\n", &UnkList[0x11 * psxId]);
+		DebugPrintf("Couldn't read offset %s\n", &UnkList[0x11 * psxId]);
 		goto load_texture_fail;
 	}
 
 	fclose(fp);//Dont leak file pointers
 	res = texBuffer;
-	printf("Successfully loaded a texture! %s %08X\n", path, res);
+	DebugPrintf("Successfully loaded a texture! %s %08X\n", path, res);
 
 load_texture_fail:
 	if (textures[id] != NULL && res == NULL) {

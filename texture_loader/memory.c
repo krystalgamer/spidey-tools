@@ -4,6 +4,7 @@
  */
 
 #include "memory.h"
+#include "log.h"
 
 BOOL ChangeAddressPerms(DWORD start, DWORD size, DWORD newPerms, DWORD *oldProtect, const char *reason) {
 
@@ -16,7 +17,7 @@ BOOL ChangeAddressPerms(DWORD start, DWORD size, DWORD newPerms, DWORD *oldProte
 		oldProtect == NULL ? &backupOldProtect : oldProtect);
 
 	if (TRUE == ret && reason) {
-		printf("Successfully changed permissions for %08X. Reason: %s\n", start, reason);
+		DebugPrintf("Successfully changed permissions for %08X. Reason: %s\n", start, reason);
 	}
 
 	return ret;
@@ -35,22 +36,20 @@ BOOL MakeAddressRW(DWORD start, DWORD size, DWORD *oldProtect, const char *reaso
 void NopMemory(DWORD address, DWORD size, const char *reason){
 
 	//Nop memory
-	memset(address, 0x90, size);
+	memset((void*)address, 0x90, size);
 
 	if(reason)
-		printf("Successfully patched address:%08X Reason: %s\n", address ,reason);
-
-	return TRUE;
+		DebugPrintf("Successfully patched address:%08X Reason: %s\n", address ,reason);
 }
 
 void SetMemory(DWORD address, DWORD size, const unsigned char *buffer, const char *reason){
 
 	//Nop memory
-	memcpy(address, buffer, size);
+	memcpy((void*)address, buffer, size);
 
 
 	if(reason)
-		printf("Successfully patched address:%08X Reason: %s\n", address ,reason);
+		DebugPrintf("Successfully patched address:%08X Reason: %s\n", address ,reason);
 }
 
 /*
@@ -67,5 +66,5 @@ void HookFunc(DWORD callAdd, DWORD funcAdd, const unsigned char *reason){
 	SetMemory(callAdd + 1, 4, (unsigned char *)&jmpOff, NULL);
 
 	if(reason)
-		printf("Hook: %08X -  %s\n", callAdd, reason);
+		DebugPrintf("Hook: %08X -  %s\n", callAdd, reason);
 }
