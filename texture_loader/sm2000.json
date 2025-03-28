@@ -1,12 +1,13 @@
 {
-	"no_intros":	true,
-	"no_fmvs":	false,
-	"psx_graphics":	false,
-	"console":	true,
-	"texture_loader":	true,
-	"file_loader":	true,
-	"frame_counter":	false,
-	"frame_limiter":	false,
-	"fix_bugs":	true,
-	"unlock_everything":	false
+	"no_intros": true,
+	"no_fmvs": false,
+	"psx_graphics": false,
+	"console": true,
+	"texture_loader": true,
+	"file_loader": true,
+	"frame_counter": false,
+	"frame_limiter": false,
+	"fix_bugs": true,
+	"unlock_everything": false,
+	"skip_useless_file_load": true
 }

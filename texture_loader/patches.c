@@ -22,6 +22,19 @@ BOOL OpenFileFromDisk();
 DWORD MyGetFileSize(FILE *fp);
 
 /************************************************
+
+		      SKIP USELSS FILE LOAD
+
+ ************************************************/
+
+BOOL PatchSFXInitAtStart(void) {
+	unsigned char skip_useless_loads[5] = { 0xC2, 0x1C, 0x00, 0x90, 0x90 };
+
+	Set(0x0047100D, sizeof(skip_useless_loads), skip_useless_loads, "Skip load of amutli.fob and thehall to speed up game boot");
+	return TRUE;
+}
+
+/************************************************
             
 					NO VIDEOS
             

@@ -13,5 +13,6 @@ BOOL ModOptions();
 BOOL FixBugs();
 BOOL UnlockEverything();
 BOOL TestingGround();
+BOOL PatchSFXInitAtStart();
 
 #endif

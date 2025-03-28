@@ -26,6 +26,7 @@ typedef struct{
 	bool frame_limiter;
 	bool fix_bugs;
 	bool unlock_everything;
+	bool skip_useless_file_load;
 } Settings;
 
 void EnsureBinkw32IsLoaded(void) {
@@ -142,6 +143,10 @@ static BOOL ApplyMyPatches(const Settings *settings){
 		DO_OR_QUIT(UnlockEverything());
 	}
 
+	if (settings->skip_useless_file_load) {
+		DO_OR_QUIT(PatchSFXInitAtStart());
+	}
+
 #ifdef _DEBUG
 	TestingGround();
 #endif
@@ -231,6 +236,7 @@ static void WriteSettingsToDisk(const Settings *settings) {
 	AddSettingToJsonObject(json, "frame_limiter", settings->frame_limiter);
 	AddSettingToJsonObject(json, "fix_bugs", settings->fix_bugs);
 	AddSettingToJsonObject(json, "unlock_everything", settings->unlock_everything);
+	AddSettingToJsonObject(json, "skip_useless_file_load", settings->skip_useless_file_load);
 
 	char *content = cJSON_Print(json);
 	fputs(content, fp);
@@ -244,8 +250,6 @@ static void ReadSettings(Settings* settings) {
 		return;
 	}
 
-	char input[256];
-	memset(input, 0, sizeof(input));
 	FILE *fp = fopen("sm2000.json", "rb");
 
 	if (fp == NULL) {
@@ -257,16 +261,26 @@ static void ReadSettings(Settings* settings) {
 	long fileSize = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-
-	if (fileSize >= sizeof(input) || fileSize < 0) {
+	if (fileSize <= 0)
+	{
+		WriteSettingsToDisk(settings);
 		fclose(fp);
-		MessageBoxA(NULL, "Dumb Json", "Resize the json file to be appropriate", 0);
-		exit(69);
+		return;
 	}
+
+	char *input = malloc(fileSize);
+	if (input == NULL)
+	{
+		MessageBoxA(NULL, "Alloc fail", "Coudln't allocate buffer to read sm2000.json", 0);
+		return;
+	}
+
 
 	fread(input, fileSize, 1, fp);
 	fclose(fp);
+
 	cJSON* json = cJSON_ParseWithLength(input, fileSize);
+	free(input);
 
 	if (json == NULL) {
 		const char* error = cJSON_GetErrorPtr();
@@ -285,6 +299,8 @@ static void ReadSettings(Settings* settings) {
 	GetJsonBool(json, "frame_limiter", &settings->frame_limiter);
 	GetJsonBool(json, "fix_bugs", &settings->fix_bugs);
 	GetJsonBool(json, "unlock_everything", &settings->unlock_everything);
+	GetJsonBool(json, "skip_useless_file_load", &settings->skip_useless_file_load);
+
 	cJSON_Delete(json);
 }
 
@@ -305,6 +321,7 @@ static int NewEntryPoint() {
 		.frame_limiter = false,
 		.fix_bugs = true,
 		.unlock_everything = false,
+		.skip_useless_file_load = true,
 	};
 
 	ReadSettings(&settings);
