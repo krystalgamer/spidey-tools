@@ -24,7 +24,7 @@ jobs:
         mkdir output
         cp texture_loader\Release\texture_loader.dll output\binkw32.dll
         cp texture_loader\sm2000.json output\.
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         path: output
         name: texture_loader
@@ -63,6 +63,6 @@ jobs:
         cp ../save_editor/save.exe save_editor/.
         mkdir texture_repacker
         cp ../texture_repacker/texture.exe texture_repacker/.
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         path: output
