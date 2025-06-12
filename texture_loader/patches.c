@@ -23,6 +23,144 @@ DWORD MyGetFileSize(FILE *fp);
 
 /************************************************
 
+				SFX DUMPER
+
+ ************************************************/
+
+typedef void (*SFX_ParseSFXFile_ptr)(char*, unsigned int*, short*, int, int);
+SFX_ParseSFXFile_ptr SFX_ParseSFXFile = (SFX_ParseSFXFile_ptr)0x00471160;
+
+
+char* sfx_names[] = {
+	"dem1.sfx",
+	"dem2.sfx",
+	"dem3.sfx",
+	"dem4.sfx",
+	"l1a1.sfx",
+	"l1a2.sfx",
+	"l1a3.sfx",
+	"l1a4.sfx",
+	"l2a1.sfx",
+	"l2a2.sfx",
+	"l3a1.sfx",
+	"l3a2.sfx",
+	"l3a3.sfx",
+	"l3a4.sfx",
+	"l3a5.sfx",
+	"l4a1.sfx",
+	"l5a1.sfx",
+	"l5a2.sfx",
+	"l5a3.sfx",
+	"l5a4.sfx",
+	"l5a5.sfx",
+	"l5a6.sfx",
+	"l5a7.sfx",
+	"l6a1.sfx",
+	"l6a2.sfx",
+	"l6a3.sfx",
+	"l6a4.sfx",
+	"l7a1.sfx",
+	"l7a2.sfx",
+	"l7a3.sfx",
+	"l7a4.sfx",
+	"l7a5.sfx",
+	"l8a1.sfx",
+	"l8a2.sfx",
+	"l8a3.sfx",
+	"l8a4.sfx",
+	"l8a5.sfx",
+	"l8a6.sfx",
+	"l9a1.sfx",
+	"l9a2.sfx",
+	"l9a3.sfx",
+	"l9a4.sfx",
+	"laa1.sfx",
+	"laa2.sfx",
+	"laa3.sfx",
+	"laa4.sfx",
+	"lba1.sfx",
+	"lba2.sfx",
+	"lba3.sfx",
+	"lba4.sfx",
+	"lca1.sfx",
+	"lca2.sfx",
+	"lca3.sfx",
+	"lca4.sfx",
+	"lda1.sfx",
+	"lda2.sfx",
+	"lda3.sfx",
+	"lfa1.sfx",
+	"lga1.sfx",
+	"lha1.sfx",
+	"menu.sfx",
+	"spidey.sfx",
+	"zArt.sfx",
+};
+
+unsigned int myArray[192];
+short myAliasArray[64];
+
+void dump_psx(char* name, int mask)
+{
+	memset(myArray, 0, 192 * 4);
+	memset(myAliasArray, 0, 64 * 2);
+
+	SFX_ParseSFXFile(name, myArray, myAliasArray, 64, mask);
+
+	char namebuf[256];
+	strcpy(namebuf, name);
+	strcat(namebuf, "_array.bin");
+
+	FILE* fp = fopen(namebuf, "wb");
+	if (!fp)
+	{
+		MessageBoxA(NULL, "FUCK", "FUCK", 0);
+		exit(69);
+	}
+
+	if (!fwrite(myArray, 192 * 4, 1, fp))
+	{
+		MessageBoxA(NULL, "FUCK", "FUCK", 0);
+		exit(69);
+	}
+	fclose(fp);
+
+	strcpy(namebuf, name);
+	strcat(namebuf, "_alias.bin");
+
+	fp = fopen(namebuf, "wb");
+	if (!fp)
+	{
+		MessageBoxA(NULL, "FUCK", "FUCK", 0);
+		exit(69);
+	}
+
+	if (!fwrite(myAliasArray, 64 * 2, 1, fp))
+	{
+		MessageBoxA(NULL, "FUCK", "FUCK", 0);
+		exit(69);
+	}
+
+	fclose(fp);
+}
+
+void DumpParsedSFXs(void)
+{
+	for (int i = 0; i < sizeof(sfx_names) / sizeof(char*); i++)
+	{
+		printf("Finna do %s\n", sfx_names[i]);
+		dump_psx(sfx_names[i], 0x40000000);
+	}
+
+	dump_psx("spidey.sfx", 0);
+
+	MessageBoxA(NULL, "DONE", "DONE", 0);
+	exit(42);
+}
+
+
+/************************************************
+
 		      SKIP USELSS FILE LOAD
 
  ************************************************/
@@ -31,6 +169,7 @@ BOOL PatchSFXInitAtStart(void) {
 	unsigned char skip_useless_loads[5] = { 0xC2, 0x1C, 0x00, 0x90, 0x90 };
 
 	Set(0x0047100D, sizeof(skip_useless_loads), skip_useless_loads, "Skip load of amutli.fob and thehall to speed up game boot");
+	//Hook(0x0047100D, DumpParsedSFXs, "Dumping the PSXs")
 	return TRUE;
 }
 
@@ -438,6 +577,20 @@ BOOL UnlockEverything() {
 	DebugPuts("Unlocking everything");
 	return ActivateCheat(1) == 1;
 }
+
+/************************************************
+
+			  Restart option
+
+************************************************/
+
+BOOL AddRestartOption() {
+
+	int val = 1;
+	Set(0x60CFDC, 4, &val, "Adding restart option");
+	return TRUE;
+}
+
 
 
 /************************************************

@@ -14,5 +14,6 @@ BOOL FixBugs();
 BOOL UnlockEverything();
 BOOL TestingGround();
 BOOL PatchSFXInitAtStart();
+BOOL AddRestartOption();
 
 #endif

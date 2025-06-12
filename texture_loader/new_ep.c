@@ -27,6 +27,7 @@ typedef struct{
 	bool fix_bugs;
 	bool unlock_everything;
 	bool skip_useless_file_load;
+	bool add_restart_option;
 } Settings;
 
 void EnsureBinkw32IsLoaded(void) {
@@ -147,6 +148,11 @@ static BOOL ApplyMyPatches(const Settings *settings){
 		DO_OR_QUIT(PatchSFXInitAtStart());
 	}
 
+	if (settings->add_restart_option) {
+		DO_OR_QUIT(AddRestartOption());
+	}
+	
+
 #ifdef _DEBUG
 	TestingGround();
 #endif
@@ -237,6 +243,7 @@ static void WriteSettingsToDisk(const Settings *settings) {
 	AddSettingToJsonObject(json, "fix_bugs", settings->fix_bugs);
 	AddSettingToJsonObject(json, "unlock_everything", settings->unlock_everything);
 	AddSettingToJsonObject(json, "skip_useless_file_load", settings->skip_useless_file_load);
+	AddSettingToJsonObject(json, "add_restart_option", settings->add_restart_option);
 
 	char *content = cJSON_Print(json);
 	fputs(content, fp);
@@ -300,6 +307,7 @@ static void ReadSettings(Settings* settings) {
 	GetJsonBool(json, "fix_bugs", &settings->fix_bugs);
 	GetJsonBool(json, "unlock_everything", &settings->unlock_everything);
 	GetJsonBool(json, "skip_useless_file_load", &settings->skip_useless_file_load);
+	GetJsonBool(json, "add_restart_option", &settings->add_restart_option);
 
 	cJSON_Delete(json);
 }
@@ -322,6 +330,7 @@ static int NewEntryPoint() {
 		.fix_bugs = true,
 		.unlock_everything = false,
 		.skip_useless_file_load = true,
+		.add_restart_option = true,
 	};
 
 	ReadSettings(&settings);

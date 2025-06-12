@@ -58,7 +58,7 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>copy F:\Users\krystal\source\repos\spidey-tools\texture_loader\Debug\texture_loader.dll D:\Activision\Spider-Man\binkw32.dll</Command>
+      <Command>copy C:\Users\krystal\Documents\spidey-tools\texture_loader\Debug\texture_loader.dll D:\Activision\Spider-Man\binkw32.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
