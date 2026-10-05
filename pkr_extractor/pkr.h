@@ -44,3 +44,6 @@ void ExtractDirs(PKRDir *pkrDirs);
 
 //extracted.c
 bool ExtractDir(PKRDir *curDir);
+
+//pkr.c
+extern bool ignore_crc;
